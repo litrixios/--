@@ -9,7 +9,7 @@ echo       SmartEnergyDB Deployment Tool v2.0
 echo ==========================================================
 echo.
 
-:: 1. è®¾ç½®æ•°æ®åº“è¿æ¥ä¿¡æ¯
+:: 1. ÉèÖÃÊı¾İ¿âÁ¬½ÓĞÅÏ¢
 echo Please enter Server Name.
 echo Default is [localhost]. If you use Express version, try [.\SQLEXPRESS]
 set /p ServerName=Server Name (Enter for localhost):
@@ -39,7 +39,7 @@ if exist "sql\02_Views_Procs" (
 
 echo.
 echo [4/5] Creating Triggers...
-:: è¿™é‡Œæ˜¯æ–°å¢çš„æ­¥éª¤
+:: ÕâÀïÊÇĞÂÔöµÄ²½Öè
 if exist "sql\03_Triggers" (
     for %%f in (sql\03_Triggers\*.sql) do (
         echo    - Executing: %%f
@@ -49,7 +49,7 @@ if exist "sql\03_Triggers" (
 
 echo.
 echo [5/5] Importing Seed Data...
-:: æ³¨æ„ï¼šè¿™é‡Œè·¯å¾„æ”¹æˆäº† 04_SeedData
+:: ×¢Òâ£ºÕâÀïÂ·¾¶¸Ä³ÉÁË 04_SeedData
 if exist "sql\04_SeedData" (
     for %%f in (sql\04_SeedData\*.sql) do (
         echo    - Executing: %%f
