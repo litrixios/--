@@ -1,29 +1,29 @@
 CREATE TABLE EquipmentAsset (
     AssetId INT IDENTITY(1,1) PRIMARY KEY,
     AssetName NVARCHAR(50) NOT NULL,
-    EquipmentType NVARCHAR(20) NOT NULL, -- å˜å‹å™¨/æ°´è¡¨/é€†å˜å™¨...
+    EquipmentType NVARCHAR(20) NOT NULL, -- ±äÑ¹Æ÷/Ë®±í/Äæ±äÆ÷...
     ModelSpec NVARCHAR(50) NULL,
     InstallTime DATE NULL,
     WarrantyYears INT NULL,
-    ScrapStatus NVARCHAR(10) NOT NULL DEFAULT N'æ­£å¸¸ä½¿ç”¨', -- æ­£å¸¸ä½¿ç”¨/å·²æŠ¥åºŸ
-    RelatedDeviceType NVARCHAR(20) NULL, -- å˜å‹å™¨/å…‰ä¼è®¾å¤‡/èƒ½è€—è®¡é‡ ç­‰
+    ScrapStatus NVARCHAR(10) NOT NULL DEFAULT N'Õı³£Ê¹ÓÃ', -- Õı³£Ê¹ÓÃ/ÒÑ±¨·Ï
+    RelatedDeviceType NVARCHAR(20) NULL, -- ±äÑ¹Æ÷/¹â·üÉè±¸/ÄÜºÄ¼ÆÁ¿ µÈ
     RelatedDeviceId INT NULL,
     CONSTRAINT CK_EquipmentAsset_Scrap
-        CHECK (ScrapStatus IN (N'æ­£å¸¸ä½¿ç”¨', N'å·²æŠ¥åºŸ'))
+        CHECK (ScrapStatus IN (N'Õı³£Ê¹ÓÃ', N'ÒÑ±¨·Ï'))
 );
 
 CREATE TABLE Alarm (
     AlarmId BIGINT IDENTITY(1,1) PRIMARY KEY,
-    AlarmType NVARCHAR(20) NOT NULL, -- è¶Šé™å‘Šè­¦/é€šè®¯æ•…éšœ/è®¾å¤‡æ•…éšœ
+    AlarmType NVARCHAR(20) NOT NULL, -- Ô½ÏŞ¸æ¾¯/Í¨Ñ¶¹ÊÕÏ/Éè±¸¹ÊÕÏ
     RelatedDeviceType NVARCHAR(20) NULL,
     RelatedDeviceId INT NULL,
     OccurTime DATETIME2(0) NOT NULL,
-    AlarmLevel NVARCHAR(10) NOT NULL, -- é«˜/ä¸­/ä½
+    AlarmLevel NVARCHAR(10) NOT NULL, -- ¸ß/ÖĞ/µÍ
     Content NVARCHAR(200) NOT NULL,
-    ProcessStatus NVARCHAR(10) NOT NULL DEFAULT N'æœªå¤„ç†', -- æœªå¤„ç†/å¤„ç†ä¸­/å·²ç»“æ¡ˆ
+    ProcessStatus NVARCHAR(10) NOT NULL DEFAULT N'Î´´¦Àí', -- Î´´¦Àí/´¦ÀíÖĞ/ÒÑ½á°¸
     ThresholdDesc NVARCHAR(100) NULL,
-    CONSTRAINT CK_Alarm_Level CHECK (AlarmLevel IN (N'é«˜', N'ä¸­', N'ä½')),
-    CONSTRAINT CK_Alarm_Status CHECK (ProcessStatus IN (N'æœªå¤„ç†', N'å¤„ç†ä¸­', N'å·²ç»“æ¡ˆ'))
+    CONSTRAINT CK_Alarm_Level CHECK (AlarmLevel IN (N'¸ß', N'ÖĞ', N'µÍ')),
+    CONSTRAINT CK_Alarm_Status CHECK (ProcessStatus IN (N'Î´´¦Àí', N'´¦ÀíÖĞ', N'ÒÑ½á°¸'))
 );
 CREATE INDEX IX_Alarm_OccurTime ON Alarm(OccurTime);
 
@@ -35,9 +35,9 @@ CREATE TABLE WorkOrder (
     ResponseTime DATETIME2(0) NULL,
     CompleteTime DATETIME2(0) NULL,
     ResultDesc NVARCHAR(200) NULL,
-    ReviewStatus NVARCHAR(10) NOT NULL DEFAULT N'æœªé€šè¿‡', -- é€šè¿‡/æœªé€šè¿‡
+    ReviewStatus NVARCHAR(10) NOT NULL DEFAULT N'Î´Í¨¹ı', -- Í¨¹ı/Î´Í¨¹ı
     AttachmentPath NVARCHAR(200) NULL,
     CONSTRAINT FK_WorkOrder_Alarm FOREIGN KEY (AlarmId) REFERENCES Alarm(AlarmId),
     CONSTRAINT FK_WorkOrder_Maintainer FOREIGN KEY (MaintainerId) REFERENCES UserAccount(UserId),
-    CONSTRAINT CK_WorkOrder_Review CHECK (ReviewStatus IN (N'é€šè¿‡', N'æœªé€šè¿‡'))
+    CONSTRAINT CK_WorkOrder_Review CHECK (ReviewStatus IN (N'Í¨¹ı', N'Î´Í¨¹ı'))
 );

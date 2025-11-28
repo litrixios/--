@@ -1,6 +1,6 @@
 CREATE TABLE Substation (
     SubstationId INT IDENTITY(1,1) PRIMARY KEY,
-    SubstationCode VARCHAR(20) NOT NULL UNIQUE,  -- ÈÖçÁîµÊàøÁºñÂè∑
+    SubstationCode VARCHAR(20) NOT NULL UNIQUE,  -- ≈‰µÁ∑ø±‡∫≈
     FactoryId INT NOT NULL,
     Name NVARCHAR(50) NOT NULL,
     LocationDesc NVARCHAR(100) NULL,
@@ -19,7 +19,7 @@ CREATE TABLE Substation (
 CREATE TABLE Circuit (
     CircuitId INT IDENTITY(1,1) PRIMARY KEY,
     SubstationId INT NOT NULL,
-    CircuitCode VARCHAR(20) NOT NULL,  -- ÂõûË∑ØÁºñÂè∑
+    CircuitCode VARCHAR(20) NOT NULL,  -- ªÿ¬∑±‡∫≈
     Name NVARCHAR(50) NULL,
     RatedVoltageKV DECIMAL(10,2) NULL,
     RatedCurrentA DECIMAL(10,2) NULL,
@@ -35,11 +35,11 @@ CREATE TABLE Transformer (
     Name NVARCHAR(50) NULL,
     CapacityKVA DECIMAL(10,2) NULL,
     InstallDate DATE NULL,
-    Status VARCHAR(10) NOT NULL DEFAULT N'Ê≠£Â∏∏', -- Ê≠£Â∏∏/ÂºÇÂ∏∏
+    Status VARCHAR(10) NOT NULL DEFAULT N'’˝≥£', -- ’˝≥£/“Ï≥£
     CONSTRAINT UQ_Transformer UNIQUE(SubstationId, TransformerCode),
     CONSTRAINT FK_Transformer_Substation FOREIGN KEY (SubstationId)
         REFERENCES Substation(SubstationId),
-    CONSTRAINT CK_Transformer_Status CHECK (Status IN (N'Ê≠£Â∏∏', N'ÂºÇÂ∏∏'))
+    CONSTRAINT CK_Transformer_Status CHECK (Status IN (N'’˝≥£', N'“Ï≥£'))
 );
 
 CREATE TABLE CircuitMeasurement (
@@ -54,16 +54,16 @@ CREATE TABLE CircuitMeasurement (
     PowerFactor DECIMAL(5,3) NULL,
     ForwardActiveEnergyKWh DECIMAL(18,3) NULL,
     ReverseActiveEnergyKWh DECIMAL(18,3) NULL,
-    SwitchStatus NVARCHAR(10) NOT NULL,    -- ÂàÜÈó∏/ÂêàÈó∏
+    SwitchStatus NVARCHAR(10) NOT NULL,    -- ∑÷’¢/∫œ’¢
     CableHeadTemp DECIMAL(5,2) NULL,
     CapacitorTemp DECIMAL(5,2) NULL,
-    DataQualityStatus NVARCHAR(20) NOT NULL DEFAULT N'ÂÆåÊï¥', -- ÂÆåÊï¥/Êï∞ÊçÆ‰∏çÂÆåÊï¥
+    DataQualityStatus NVARCHAR(20) NOT NULL DEFAULT N'ÕÍ’˚', -- ÕÍ’˚/ ˝æ›≤ªÕÍ’˚
     CONSTRAINT FK_CircuitMeasurement_Substation FOREIGN KEY (SubstationId)
         REFERENCES Substation(SubstationId),
     CONSTRAINT FK_CircuitMeasurement_Circuit FOREIGN KEY (CircuitId)
         REFERENCES Circuit(CircuitId),
     CONSTRAINT CK_CircuitMeasurement_SwitchStatus
-        CHECK (SwitchStatus IN (N'ÂàÜÈó∏', N'ÂêàÈó∏'))
+        CHECK (SwitchStatus IN (N'∑÷’¢', N'∫œ’¢'))
 );
 CREATE INDEX IX_CircuitMeasurement_Time
     ON CircuitMeasurement(SubstationId, CircuitId, CollectTime);
@@ -73,18 +73,18 @@ CREATE TABLE TransformerMeasurement (
     SubstationId INT NOT NULL,
     TransformerId INT NOT NULL,
     CollectTime DATETIME2(0) NOT NULL,
-    LoadRate DECIMAL(5,2) NULL, -- Ë¥üËΩΩÁéá %
+    LoadRate DECIMAL(5,2) NULL, -- ∏∫‘ÿ¬  %
     WindingTemp DECIMAL(5,2) NULL,
     CoreTemp DECIMAL(5,2) NULL,
     EnvTemp DECIMAL(5,2) NULL,
     EnvHumidity DECIMAL(5,2) NULL,
-    RunStatus NVARCHAR(10) NOT NULL DEFAULT N'Ê≠£Â∏∏',
+    RunStatus NVARCHAR(10) NOT NULL DEFAULT N'’˝≥£',
     CONSTRAINT FK_TransformerMeasurement_Substation FOREIGN KEY (SubstationId)
         REFERENCES Substation(SubstationId),
     CONSTRAINT FK_TransformerMeasurement_Transformer FOREIGN KEY (TransformerId)
         REFERENCES Transformer(TransformerId),
     CONSTRAINT CK_TransformerMeasurement_Status
-        CHECK (RunStatus IN (N'Ê≠£Â∏∏', N'ÂºÇÂ∏∏'))
+        CHECK (RunStatus IN (N'’˝≥£', N'“Ï≥£'))
 );
 CREATE INDEX IX_TransformerMeasurement_Time
     ON TransformerMeasurement(SubstationId, TransformerId, CollectTime);

@@ -1,18 +1,18 @@
 CREATE TABLE EnergyMeter (
     MeterId INT IDENTITY(1,1) PRIMARY KEY,
     MeterCode VARCHAR(30) NOT NULL UNIQUE,
-    EnergyType NVARCHAR(10) NOT NULL, -- Ê∞¥/Ëí∏Ê±Ω/Â§©ÁÑ∂Ê∞î/Áîµ
+    EnergyType NVARCHAR(10) NOT NULL, -- ÀÆ/’Ù∆˚/ÃÏ»ª∆¯/µÁ
     InstallLocation NVARCHAR(100) NULL,
-    PipeSpec NVARCHAR(20) NULL, -- DN25 Á≠â
+    PipeSpec NVARCHAR(20) NULL, -- DN25 µ»
     CommProtocol VARCHAR(20) NULL,
-    RunStatus NVARCHAR(10) NOT NULL DEFAULT N'Ê≠£Â∏∏', -- Ê≠£Â∏∏/ÊïÖÈöú
+    RunStatus NVARCHAR(10) NOT NULL DEFAULT N'’˝≥£', -- ’˝≥£/π ’œ
     CalibrationCycleMonths INT NULL,
     Manufacturer NVARCHAR(50) NULL,
     FactoryId INT NOT NULL,
     CONSTRAINT FK_EnergyMeter_Factory FOREIGN KEY (FactoryId)
         REFERENCES FactoryArea(FactoryId),
-    CONSTRAINT CK_EnergyMeter_Type CHECK (EnergyType IN (N'Ê∞¥', N'Ëí∏Ê±Ω', N'Â§©ÁÑ∂Ê∞î', N'Áîµ')),
-    CONSTRAINT CK_EnergyMeter_Status CHECK (RunStatus IN (N'Ê≠£Â∏∏', N'ÊïÖÈöú'))
+    CONSTRAINT CK_EnergyMeter_Type CHECK (EnergyType IN (N'ÀÆ', N'’Ù∆˚', N'ÃÏ»ª∆¯', N'µÁ')),
+    CONSTRAINT CK_EnergyMeter_Status CHECK (RunStatus IN (N'’˝≥£', N'π ’œ'))
 );
 
 CREATE TABLE EnergyMeasurement (
@@ -20,10 +20,10 @@ CREATE TABLE EnergyMeasurement (
     MeterId INT NOT NULL,
     CollectTime DATETIME2(0) NOT NULL,
     Value DECIMAL(18,3) NOT NULL,
-    Unit NVARCHAR(10) NOT NULL, -- m¬≥/t/kWh
-    DataQuality NVARCHAR(10) NOT NULL DEFAULT N'‰ºò', -- ‰ºò/ËâØ/‰∏≠/Â∑Æ
+    Unit NVARCHAR(10) NOT NULL, -- m?/t/kWh
+    DataQuality NVARCHAR(10) NOT NULL DEFAULT N'”≈', -- ”≈/¡º/÷–/≤Ó
     FactoryId INT NOT NULL,
-    NeedVerify BIT NOT NULL DEFAULT 0, -- Êï∞ÊçÆË¥®Èáè‰∏≠/Â∑Æ -> ÂæÖÊ†∏ÂÆû
+    NeedVerify BIT NOT NULL DEFAULT 0, --  ˝æ›÷ ¡ø÷–/≤Ó -> ¥˝∫À µ
     CONSTRAINT FK_EnergyMeasurement_Meter FOREIGN KEY (MeterId)
         REFERENCES EnergyMeter(MeterId),
     CONSTRAINT FK_EnergyMeasurement_Factory FOREIGN KEY (FactoryId)
@@ -34,18 +34,18 @@ CREATE INDEX IX_EnergyMeasurement_Time
 
 CREATE TABLE PeakValleyEnergy (
     RecordId INT IDENTITY(1,1) PRIMARY KEY,
-    EnergyType NVARCHAR(10) NOT NULL, -- Áîµ/Ê∞¥/Ëí∏Ê±Ω/Â§©ÁÑ∂Ê∞î
+    EnergyType NVARCHAR(10) NOT NULL, -- µÁ/ÀÆ/’Ù∆˚/ÃÏ»ª∆¯
     FactoryId INT NOT NULL,
     StatDate DATE NOT NULL,
-    SharpPeriodValue DECIMAL(18,3) NULL, -- Â∞ñÂ≥∞
-    PeakPeriodValue DECIMAL(18,3) NULL,  -- È´òÂ≥∞
-    FlatPeriodValue DECIMAL(18,3) NULL,  -- Âπ≥ÊÆµ
-    ValleyPeriodValue DECIMAL(18,3) NULL,-- ‰ΩéË∞∑
+    SharpPeriodValue DECIMAL(18,3) NULL, -- º‚∑Â
+    PeakPeriodValue DECIMAL(18,3) NULL,  -- ∏ﬂ∑Â
+    FlatPeriodValue DECIMAL(18,3) NULL,  -- ∆Ω∂Œ
+    ValleyPeriodValue DECIMAL(18,3) NULL,-- µÕπ»
     TotalValue DECIMAL(18,3) NULL,
-    PeakValleyPrice DECIMAL(10,4) NULL,  -- Â≥∞Ë∞∑Áîµ‰ª∑
-    EnergyCost DECIMAL(18,2) NULL,       -- ËÉΩËÄóÊàêÊú¨
+    PeakValleyPrice DECIMAL(10,4) NULL,  -- ∑Âπ»µÁº€
+    EnergyCost DECIMAL(18,2) NULL,       -- ƒ‹∫ƒ≥…±æ
     CONSTRAINT FK_PeakValleyEnergy_Factory FOREIGN KEY (FactoryId)
         REFERENCES FactoryArea(FactoryId),
-    CONSTRAINT CK_PeakValleyEnergy_Type CHECK (EnergyType IN (N'Áîµ', N'Ê∞¥', N'Ëí∏Ê±Ω', N'Â§©ÁÑ∂Ê∞î')),
+    CONSTRAINT CK_PeakValleyEnergy_Type CHECK (EnergyType IN (N'µÁ', N'ÀÆ', N'’Ù∆˚', N'ÃÏ»ª∆¯')),
     CONSTRAINT UQ_PeakValley UNIQUE(EnergyType, FactoryId, StatDate)
 );

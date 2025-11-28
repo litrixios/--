@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10760c35-d72b-4010-89c1-e8a79b1b79fd" name="更改" comment="1.0" />
+    <list default="true" id="10760c35-d72b-4010-89c1-e8a79b1b79fd" name="更改" comment="1.0">
+      <change afterPath="$PROJECT_DIR$/setup_db.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/00_Init/01_CreateDatabase.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/00_Init/01_CreateDatabase.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/01_Tables/02_Substation.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/01_Tables/02_Substation.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/01_Tables/03_Pv.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/01_Tables/03_Pv.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/01_Tables/04_Energy.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/01_Tables/04_Energy.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/01_Tables/05_Alarm.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/01_Tables/05_Alarm.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/01_Tables/06_Dashboard.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/01_Tables/06_Dashboard.sql" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,7 +38,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master"
+    "git-widget-placeholder": "main"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -70,7 +79,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="main" />
                       </list>
                     </value>
                   </entry>

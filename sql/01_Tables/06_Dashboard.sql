@@ -4,10 +4,10 @@ CREATE TABLE DashboardConfig (
     RefreshIntervalSeconds INT NOT NULL,
     DisplayFields NVARCHAR(200) NOT NULL,
     SortRule NVARCHAR(50) NULL,
-    PermissionLevel NVARCHAR(20) NOT NULL -- ç®¡ç†å‘˜/èƒ½æºç®¡ç†å‘˜/è¿ç»´äººå‘˜
+    PermissionLevel NVARCHAR(20) NOT NULL -- ¹ÜÀíÔ±/ÄÜÔ´¹ÜÀíÔ±/ÔËÎ¬ÈËÔ±
 );
 
--- å®žæ—¶æ±‡æ€»æ•°æ®ï¼ˆåˆ†é’Ÿçº§ï¼‰
+-- ÊµÊ±»ã×ÜÊý¾Ý£¨·ÖÖÓ¼¶£©
 CREATE TABLE RealtimeSummary (
     SummaryId BIGINT IDENTITY(1,1) PRIMARY KEY,
     StatTime DATETIME2(0) NOT NULL,
@@ -23,17 +23,17 @@ CREATE TABLE RealtimeSummary (
     LowAlarmCount INT NULL
 );
 
--- åŽ†å²è¶‹åŠ¿æ•°æ®ï¼ˆæ—¥æŠ¥/å‘¨æŠ¥/æœˆæŠ¥ï¼‰
+-- ÀúÊ·Ç÷ÊÆÊý¾Ý£¨ÈÕ±¨/ÖÜ±¨/ÔÂ±¨£©
 CREATE TABLE HistoryTrend (
     TrendId BIGINT IDENTITY(1,1) PRIMARY KEY,
-    EnergyType NVARCHAR(10) NOT NULL,  -- ç”µ/æ°´/è’¸æ±½/å¤©ç„¶æ°”/å…‰ä¼
-    PeriodType NVARCHAR(10) NOT NULL,  -- æ—¥/å‘¨/æœˆ
+    EnergyType NVARCHAR(10) NOT NULL,  -- µç/Ë®/ÕôÆû/ÌìÈ»Æø/¹â·ü
+    PeriodType NVARCHAR(10) NOT NULL,  -- ÈÕ/ÖÜ/ÔÂ
     StatTime DATE NOT NULL,
     Value DECIMAL(18,3) NOT NULL,
-    YoYRate DECIMAL(5,2) NULL,         -- åŒæ¯” %
-    MoMRate DECIMAL(5,2) NULL,         -- çŽ¯æ¯” %
+    YoYRate DECIMAL(5,2) NULL,         -- Í¬±È %
+    MoMRate DECIMAL(5,2) NULL,         -- »·±È %
     IndustryAvgValue DECIMAL(18,3) NULL,
-    TrendFlag NVARCHAR(10) NULL        -- èƒ½è€—ä¸Šå‡/èƒ½è€—ä¸‹é™
+    TrendFlag NVARCHAR(10) NULL        -- ÄÜºÄÉÏÉý/ÄÜºÄÏÂ½µ
 );
 CREATE INDEX IX_HistoryTrend_TypeTime
     ON HistoryTrend(EnergyType, PeriodType, StatTime);

@@ -8,18 +8,18 @@ CREATE TABLE PvGridPoint (
 CREATE TABLE PvDevice (
     DeviceId INT IDENTITY(1,1) PRIMARY KEY,
     DeviceCode VARCHAR(30) NOT NULL UNIQUE,
-    DeviceType NVARCHAR(20) NOT NULL, -- é€†å˜å™¨/æ±‡æµç®±
+    DeviceType NVARCHAR(20) NOT NULL, -- Äæ±äÆ÷/»ãÁ÷Ïä
     GridPointId INT NOT NULL,
     InstallLocation NVARCHAR(100) NULL,
     CapacityKWP DECIMAL(10,2) NULL,
     CommissionDate DATE NULL,
     CalibrationCycleMonths INT NULL,
-    RunStatus NVARCHAR(10) NOT NULL DEFAULT N'æ­£å¸¸', -- æ­£å¸¸/æ•…éšœ/ç¦»çº¿
+    RunStatus NVARCHAR(10) NOT NULL DEFAULT N'Õı³£', -- Õı³£/¹ÊÕÏ/ÀëÏß
     CommProtocol VARCHAR(20) NULL, -- RS485/Lora
     CONSTRAINT FK_PvDevice_GridPoint FOREIGN KEY (GridPointId)
         REFERENCES PvGridPoint(GridPointId),
-    CONSTRAINT CK_PvDevice_Type CHECK (DeviceType IN (N'é€†å˜å™¨', N'æ±‡æµç®±')),
-    CONSTRAINT CK_PvDevice_Status CHECK (RunStatus IN (N'æ­£å¸¸', N'æ•…éšœ', N'ç¦»çº¿'))
+    CONSTRAINT CK_PvDevice_Type CHECK (DeviceType IN (N'Äæ±äÆ÷', N'»ãÁ÷Ïä')),
+    CONSTRAINT CK_PvDevice_Status CHECK (RunStatus IN (N'Õı³£', N'¹ÊÕÏ', N'ÀëÏß'))
 );
 
 CREATE TABLE PvGeneration (
@@ -48,7 +48,7 @@ CREATE TABLE PvForecast (
     TimeRange NVARCHAR(20) NOT NULL, -- 08:00-09:00
     ForecastGenerationKWh DECIMAL(18,3) NOT NULL,
     ActualGenerationKWh DECIMAL(18,3) NULL,
-    DeviationRate DECIMAL(5,2) NULL, -- åå·®ç‡ %
+    DeviationRate DECIMAL(5,2) NULL, -- Æ«²îÂÊ %
     ModelVersion NVARCHAR(20) NULL,
     NeedModelOptimize BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_PvForecast_GridPoint FOREIGN KEY (GridPointId)
