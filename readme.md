@@ -1,9 +1,11 @@
-双击文件setup_db.bat即可运行
+首先运行根目录下的convert_encoding.py
 
-运行后输入Server Name
+然后运行文件setup_db.bat
 
-![image-20251128155347742](C:\Users\lzq\AppData\Roaming\Typora\typora-user-images\image-20251128155347742.png)
+在该页面需要输入Server Name
+
+![图片1描述](img/image-1.png)
 
 和SQL Server Managerment Studio初始页面Server Name相同
 
-![image-20251128155509825](C:\Users\lzq\AppData\Roaming\Typora\typora-user-images\image-20251128155509825.png)
+![图片2描述](img/image-2.png)
