@@ -1,9 +1,9 @@
 CREATE TABLE DashboardConfig (
     ConfigId INT IDENTITY(1,1) PRIMARY KEY,
-    ModuleCode VARCHAR(30) NOT NULL, -- EnergyOverview / PvOverview / SubstationStatus / AlarmStats
-    RefreshIntervalSeconds INT NOT NULL,
-    DisplayFields NVARCHAR(200) NOT NULL,
-    SortRule NVARCHAR(50) NULL,
+    ModuleCode VARCHAR(30) NOT NULL, -- 能源总览 / 光伏总览 / 配电网运行状态 / 告警统计
+    RefreshIntervalSeconds INT NOT NULL, --秒 / 分钟
+    DisplayFields NVARCHAR(200) NOT NULL, -- 总能耗 / 光伏发电量 / 高等级告警数
+    SortRule NVARCHAR(50) NULL, -- 按时间降序 / 按能耗降序
     PermissionLevel NVARCHAR(20) NOT NULL -- 管理员/能源管理员/运维人员
 );
 
