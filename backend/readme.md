@@ -24,8 +24,8 @@ sa用户名可能处于未开启的状态，需要自己去sql server management
 
 uvicorn backend.main:app --reload
 
-![图片3描述](img/image-3.png)
+![图片3描述](../img/image-3.png)
 
 复制粘贴网址+/docs即可进入测试页面，测试根据自己需求来
 
-![图片4描述](img/image-4.png)
+![图片4描述](../img/image-4.png)
