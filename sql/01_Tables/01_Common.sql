@@ -11,7 +11,7 @@ CREATE TABLE UserAccount (
     RealName NVARCHAR(50) NOT NULL,
     PasswordHash VARBINARY(64) NOT NULL,
     Phone VARCHAR(20) NULL,
-    RoleCode VARCHAR(30) NOT NULL, -- EnergyAdmin / Maintainer / Analyst / Admin / Manager
+    RoleCode VARCHAR(30) NOT NULL, -- 能源管理员 / 运维人员 / 数据分析师 / 系统管理员 / 企业管理层 / 运维工单管理员
     IsLocked BIT NOT NULL DEFAULT 0,
     FailedLoginCount INT NOT NULL DEFAULT 0,
     LastFailedTime DATETIME2(0) NULL
