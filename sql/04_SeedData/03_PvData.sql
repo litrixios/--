@@ -156,67 +156,122 @@ VALUES
 (48, 20, '2025-11-28 09:50:00', 12.800, 8.500, 4.300, 96.800, 488.200, 26.500),
 (49, 20, '2025-11-28 09:50:00', 2.600, 1.700, 0.900, 96.500, 486.500, 5.400);
 
--- 4. 光伏预测数据表（PvForecast）- 25条
-INSERT INTO PvForecast (GridPointId, ForecastDate, TimeRange, ForecastGenerationKWh, ActualGenerationKWh, ModelVersion)
-VALUES
--- 并网点1（GridPointId=1）近25小时预测
-(1, '2025-11-28', N'08:00-09:00', 120.500, 100.000, N'v2.1'),
-(1, '2025-11-28', N'09:00-10:00', 135.200, 132.800, N'v2.1'),
-(1, '2025-11-28', N'10:00-11:00', 148.700, 145.200, N'v2.1'),
-(1, '2025-11-28', N'11:00-12:00', 156.300, 152.600, N'v2.1'),
-(1, '2025-11-28', N'12:00-13:00', 162.800, 158.100, N'v2.1'),
-(1, '2025-11-28', N'13:00-14:00', 158.400, 154.700, N'v2.1'),
-(1, '2025-11-28', N'14:00-15:00', 145.600, 142.300, N'v2.1'),
-(1, '2025-11-28', N'15:00-16:00', 128.900, 125.800, N'v2.1'),
-(1, '2025-11-28', N'16:00-17:00', 112.400, 108.900, N'v2.1'),
-(1, '2025-11-28', N'17:00-18:00', 95.700, 92.400, N'v2.1'),
--- 并网点2（GridPointId=2）近8小时预测
-(2, '2025-11-28', N'08:00-09:00', 96.400, 94.200, N'v2.1'),
-(2, '2025-11-28', N'09:00-10:00', 108.200, 105.800, N'v2.1'),
-(2, '2025-11-28', N'10:00-11:00', 80.000, 116.200, N'v2.1'),
-(2, '2025-11-28', N'11:00-12:00', 80.000, 121.600, N'v2.1'),
-(2, '2025-11-28', N'12:00-13:00', 80.200, 126.500, N'v2.1'),
-(2, '2025-11-28', N'13:00-14:00', 80.700, 123.800, N'v2.1'),
-(2, '2025-11-28', N'14:00-15:00', 116.500, 113.800, N'v2.1'),
-(2, '2025-11-28', N'15:00-16:00', 103.100, 100.600, N'v2.1'),
--- 并网点3（GridPointId=3）近7小时预测
-(3, '2025-11-28', N'08:00-09:00', 72.300, 70.100, N'v2.1'),
-(3, '2025-11-28', N'09:00-10:00', 81.200, 78.900, N'v2.1'),
-(3, '2025-11-28', N'10:00-11:00', 89.300, 87.100, N'v2.1'),
-(3, '2025-11-28', N'11:00-12:00', 93.800, 91.200, N'v2.1'),
-(3, '2025-11-28', N'12:00-13:00', 97.700, 94.900, N'v2.1'),
-(3, '2025-11-28', N'13:00-14:00', 95.000, 92.800, N'v2.1'),
-(3, '2025-11-28', N'14:00-15:00', 87.400, 85.300, N'v2.1'),
-(4, '2025-11-28', N'08:00-09:00', 178.500, 175.200, N'v2.1'),
--- 并网点5
-(5, '2025-11-28', N'08:00-09:00', 142.800, 140.100, N'v2.1'),
--- 并网点6
-(6, '2025-11-28', N'08:00-09:00', 107.100, 105.300, N'v2.1'),
--- 并网点7
-(7, '2025-11-28', N'08:00-09:00', 47.600, 46.800, N'v2.1'),
--- 并网点8
-(8, '2025-11-28', N'08:00-09:00', 59.500, 58.200, N'v2.1'),
--- 并网点9
-(9, '2025-11-28', N'08:00-09:00', 83.300, 81.600, N'v2.1'),
--- 并网点10
-(10, '2025-11-28', N'08:00-09:00', 95.200, 93.400, N'v2.1'),
--- 并网点11
-(11, '2025-11-28', N'08:00-09:00', 66.500, 65.100, N'v2.1'),
--- 并网点12
-(12, '2025-11-28', N'08:00-09:00', 76.000, 74.500, N'v2.1'),
--- 并网点13
-(13, '2025-11-28', N'08:00-09:00', 130.500, 128.200, N'v2.1'),
--- 并网点14
-(14, '2025-11-28', N'08:00-09:00', 88.900, 87.300, N'v2.1'),
--- 并网点15
-(15, '2025-11-28', N'08:00-09:00', 60.800, 59.600, N'v2.1'),
--- 并网点16
-(16, '2025-11-28', N'08:00-09:00', 68.400, 67.100, N'v2.1'),
--- 并网点17
-(17, '2025-11-28', N'08:00-09:00', 73.200, 71.800, N'v2.1'),
--- 并网点18
-(18, '2025-11-28', N'08:00-09:00', 99.800, 97.900, N'v2.1'),
--- 并网点19
-(19, '2025-11-28', N'08:00-09:00', 80.600, 79.100, N'v2.1'),
--- 并网点20
-(20, '2025-11-28', N'08:00-09:00', 114.000, 111.800, N'v2.1');
+-- 4. 光伏预测数据表（PvForecast）
+SET NOCOUNT ON;
+SET DATEFORMAT ymd;
+
+DECLARE @Today DATE = CAST(GETDATE() AS DATE);   -- 今天日期
+
+-- 生成 7 天日期（今天 + 前6天）
+WITH Dates AS (
+    SELECT TOP 7
+        DATEADD(DAY, -ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) + 1, @Today) AS ForecastDate
+    FROM sys.all_objects a
+    CROSS JOIN sys.all_objects b   -- 足够行数
+),
+-- 生成每天的 10 个小时段 08:00-18:00
+Hours AS (
+    SELECT
+        RIGHT('0' + CAST(n AS VARCHAR(2)),2) + ':00-' +
+        RIGHT('0' + CAST(n+1 AS VARCHAR(2)),2) + ':00' AS TimeRange
+    FROM (VALUES(8),(9),(10),(11),(12),(13),(14),(15),(16),(17)) v(n)
+),
+-- 20 个并网点 + 模型版本
+Points AS (
+    SELECT GridPointId, ModelVersion
+    FROM (VALUES
+        (1,N'v2.2'),(2,N'v2.2'),(3,N'v2.2'),(4,N'v2.2'),(5,N'v2.2'),
+        (6,N'v2.2'),(7,N'v2.2'),(8,N'v2.2'),(9,N'v2.2'),(10,N'v2.2'),
+        (11,N'v2.106'),(12,N'v2.106'),(13,N'v2.106'),(14,N'v2.106'),(15,N'v2.106'),
+        (16,N'v2.106'),(17,N'v2.106'),(18,N'v2.106'),(19,N'v2.106'),(20,N'v2.106')
+    ) t(GridPointId, ModelVersion)
+),
+-- 交叉生成所有组合（7天 × 10小时 × 20点 = 1400 条）
+BaseData AS (
+    SELECT
+        d.ForecastDate,
+        h.TimeRange,
+        p.GridPointId,
+        p.ModelVersion
+    FROM Dates d
+    CROSS JOIN Hours h
+    CROSS JOIN Points p
+),
+-- 加入随机种子（为了可重复性，这里用日期+点+小时的哈希）
+Seeded AS (
+    SELECT *,
+        ABS(CHECKSUM(ForecastDate)
+            + GridPointId
+            + CAST(LEFT(TimeRange,2) AS INT)*100) % 10000 AS rnd_seed
+    FROM BaseData
+),
+FinalData AS (
+    SELECT
+        ForecastDate,
+        TimeRange,
+        GridPointId,
+        ModelVersion,
+        rnd_seed,
+        -- 基础预测值：不同点不同规模，白天峰值在 11-14 点左右
+        CAST(
+            50 + GridPointId * 7.5
+            + SIN(CAST(LEFT(TimeRange,2) AS FLOAT) * 3.14159 / 6) * (60 + GridPointId * 5)
+            + (rnd_seed % 57)                      -- 随机波动
+            AS DECIMAL(18,3)
+        ) AS ForecastGenerationKWh,
+
+        -- 判断是否属于“必须大偏差”的范围：点1、2 + 最近3天
+        CASE
+            WHEN GridPointId IN (1,2)
+                 AND ForecastDate >= DATEADD(DAY,-2,@Today)
+            THEN 1 ELSE 0
+        END AS ForceBigDeviation
+    FROM Seeded
+),
+CalcData AS (
+    SELECT *,
+        -- 计算实际值
+        CASE
+            -- 强制大偏差（点1、2 最近三天）：偏差 20%~40%（随机正负）
+            WHEN ForceBigDeviation = 1 THEN
+                ForecastGenerationKWh * (1 +
+                    CASE WHEN rnd_seed % 2 = 0 THEN 1 ELSE -1 END
+                    * (0.20 + (rnd_seed % 21)/100.0))      -- 20%~40%
+
+            -- 整体约5%的大偏差记录（|偏差| 15%~35%）
+            WHEN rnd_seed % 100 < 5 THEN                 -- 5% 概率
+                ForecastGenerationKWh * (1 +
+                    CASE WHEN rnd_seed % 2 = 0 THEN 1 ELSE -1 END
+                    * (0.15 + (rnd_seed % 21)/100.0))
+
+            -- 其余正常小偏差（±12% 以内）
+            ELSE
+                ForecastGenerationKWh * (1 +
+                    (rnd_seed % 25 - 12)/1000.0)         -- -1.2% ~ +1.2%
+        END AS ActualGenerationKWh
+    FROM FinalData
+)
+-- 最终插入并计算 DeviationRate、NeedModelOptimize
+INSERT INTO PvForecast (
+    GridPointId, ForecastDate, TimeRange,
+    ForecastGenerationKWh, ActualGenerationKWh,
+    DeviationRate, ModelVersion, NeedModelOptimize
+)
+SELECT
+    GridPointId,
+    ForecastDate,
+    TimeRange,
+    ForecastGenerationKWh,
+    ActualGenerationKWh,
+    ROUND(
+        CASE WHEN ForecastGenerationKWh = 0
+             THEN 0
+             ELSE 100.0 * (ActualGenerationKWh - ForecastGenerationKWh) / ForecastGenerationKWh
+        END, 2) AS DeviationRate,
+    ModelVersion,
+    CASE WHEN ABS(
+        CASE WHEN ForecastGenerationKWh = 0 THEN 0
+             ELSE 100.0 * (ActualGenerationKWh - ForecastGenerationKWh) / ForecastGenerationKWh
+        END) > 15 THEN 1 ELSE 0 END AS NeedModelOptimize
+FROM CalcData
+ORDER BY ForecastDate DESC, GridPointId, TimeRange;
