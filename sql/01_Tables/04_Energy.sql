@@ -15,6 +15,31 @@ CREATE TABLE EnergyMeter (
     CONSTRAINT CK_EnergyMeter_Status CHECK (RunStatus IN (N'Õý³£', N'¹ÊÕÏ'))
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE EnergyMeasurement (
     DataId BIGINT IDENTITY(1,1) PRIMARY KEY,
     MeterId INT NOT NULL,

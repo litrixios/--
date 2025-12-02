@@ -180,6 +180,22 @@ VALUES
 
 GO
 
+--插入的脏数据，测试数据
+INSERT INTO EnergyMeter (MeterCode, EnergyType, FactoryId, RunStatus) VALUES
+('EM-ELEC-001', '电', 1, '正常'),
+('EM-WATER-001', '水', 2, '正常');
+
+-- 再插数据 (注意最后一条，我故意设为 NeedVerify = 1)
+INSERT INTO EnergyMeasurement (MeterId, CollectTime, Value, Unit, DataQuality, FactoryId, NeedVerify) VALUES
+(1, '2025-11-30 08:00:00', 120.5, 'kWh', '优', 1, 0), -- 正常
+(1, '2025-11-30 09:00:00', 130.2, 'kWh', '优', 1, 0), -- 正常
+(1, '2025-11-30 10:00:00', 9999.9, 'kWh', '差', 1, 1); -- 异常数据！待核实！
+
+-- 3. 创建“能耗报表视图” (简化 Python 查询)
+-- 作用：把 ID 变成人能看懂的名字，专供能源管理员查看
+GO
+
+
 /* 近五天统计日期区间 */
 DECLARE @StartDate DATE = '2025-11-27';
 DECLARE @EndDate   DATE = '2025-12-01';
