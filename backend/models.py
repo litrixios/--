@@ -1,6 +1,20 @@
 # backend/models.py
 from pydantic import BaseModel
 
+# ==========================================
+# 登录认证模型
+# ==========================================
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class LoginResponse(BaseModel):
+    token: str      # 暂时用假 token，比如 UUID
+    user_id: int
+    real_name: str
+    role_code: str  # 前端根据这个跳转不同页面
+
 # 能源管理员同意或驳回请求
 class AuditRequest(BaseModel):
     data_id: int
