@@ -297,3 +297,12 @@ WHERE t.TotalValue IS NOT NULL
   )
 OPTION (MAXRECURSION 10);
 
+-- 插入的脏数据，为系统管理员服务
+INSERT INTO ElectricityPricePolicy (TimeStart, TimeEnd, PriceType)
+SELECT '00:00', '08:00', 'Valley' WHERE NOT EXISTS(SELECT 1 FROM ElectricityPricePolicy);
+INSERT INTO ElectricityPricePolicy (TimeStart, TimeEnd, PriceType)
+SELECT '08:00', '12:00', 'Peak' WHERE NOT EXISTS(SELECT 1 FROM ElectricityPricePolicy WHERE TimeStart='08:00');
+INSERT INTO ElectricityPricePolicy (TimeStart, TimeEnd, PriceType)
+SELECT '12:00', '00:00', 'Flat' WHERE NOT EXISTS(SELECT 1 FROM ElectricityPricePolicy WHERE TimeStart='12:00');
+
+
