@@ -196,113 +196,104 @@ INSERT INTO EnergyMeasurement (MeterId, CollectTime, Value, Unit, DataQuality, F
 GO
 
 
-/* 近五天统计日期区间 */
-DECLARE @StartDate DATE = '2025-11-27';
-DECLARE @EndDate   DATE = '2025-12-01';
+SET NOCOUNT ON;
+SET DATEFORMAT ymd;
+
+-- =============================================
+-- 自动生成最近 6 天（今天 + 前 5 天）的峰谷能耗统计数据
+-- 插入表：PeakValleyEnergy
+-- =============================================
+
+DECLARE @Today DATE = CAST(GETDATE() AS DATE);           -- 今天
+DECLARE @StartDate DATE = DATEADD(DAY, -5, @Today);      -- 前第5天（包含）
+DECLARE @EndDate   DATE = @Today;                        -- 今天（包含）
+
+-- 如果你只想前5天不含今天，可改为：DECLARE @EndDate DATE = DATEADD(DAY, -1, @Today);
 
 ;WITH Dates AS (
+    -- 递归生成连续日期
     SELECT @StartDate AS StatDate
     UNION ALL
     SELECT DATEADD(DAY, 1, StatDate)
     FROM Dates
     WHERE StatDate < @EndDate
 ),
-/* 每个厂区的“日均基准量”(示例，可按需调)：
-   ElecBase(kWh), WaterBase(m3), SteamBase(t), GasBase(m3)
-*/
+-- 20个厂区的日基准能耗量（可根据实际情况调整）
 Factories AS (
     SELECT *
     FROM (VALUES
-        (1 , 46000, 260, 55,  90),
-        (2 , 24000, 180, 40,  60),
-        (3 , 18000, 150,  0,   0),
-        (4 , 28000, 210,  0,  75),
-        (5 , 22000, 190,  0,   0),
-        (6 , 15000, 120,  0,   0),
-        (7 ,     0, 140, 32,  46),
-        (8 ,     0,   0, 28,  39),
-        (9 , 12000, 100, 22,  29),
-        (10, 11000,  95, 19,  26),
-        (11, 30000, 230,  0,  70),
-        (12,     0, 170, 25,  43),
-        (13,  9000,  85,  0,  23),
-        (14,  8000,  78, 16,  21),
-        (15,     0,  70, 14,  18),
-        (16, 14000,   0,  0,   0),
-        (17,     0,  88, 18,  27),
-        (18,  7000,  62, 13,  17),
-        (19,  8200,  75, 15,  23),
-        (20, 16000, 105, 28,  38)
+        (1 , 46000.0, 260.0, 55.0,  90.0),  -- FactoryId, 电(kWh), 水(m?), 蒸汽(t), 天然气(m?)
+        (2 , 24000.0, 180.0, 40.0,  60.0),
+        (3 , 18000.0, 150.0,  0.0,   0.0),
+        (4 , 28000.0, 210.0,  0.0,  75.0),
+        (5 , 22000.0, 190.0,  0.0,   0.0),
+        (6 , 15000.0, 120.0,  0.0,   0.0),
+        (7 ,     0.0, 140.0, 32.0,  46.0),
+        (8 ,     0.0,   0.0, 28.0,  39.0),
+        (9 , 12000.0, 100.0, 22.0,  29.0),
+        (10, 11000.0,  95.0, 19.0,  26.0),
+        (11, 30000.0, 230.0,  0.0,  70.0),
+        (12,     0.0, 170.0, 25.0,  43.0),
+        (13,  9000.0,  85.0,  0.0,  23.0),
+        (14,  8000.0,  78.0, 16.0,  21.0),
+        (15,     0.0,  70.0, 14.0,  18.0),
+        (16, 14000.0,   0.0,  0.0,   0.0),
+        (17,     0.0,  88.0, 18.0,  27.0),
+        (18,  7000.0,  62.0, 13.0,  17.0),
+        (19,  8200.0,  75.0, 15.0,  23.0),
+        (20, 16000.0, 105.0, 28.0,  38.0)
     ) AS v(FactoryId, ElecBase, WaterBase, SteamBase, GasBase)
 ),
-/* 四个能源类型展开成行，并给出基准量&参考价格(示例) */
+-- 将四个能源类型展开
 EnergyExpand AS (
-    SELECT FactoryId, N'电' AS EnergyType, ElecBase  AS BaseValue, CAST(0.8500 AS DECIMAL(10,4)) AS Price
-    FROM Factories
+    SELECT FactoryId, N'电'     AS EnergyType, ElecBase   AS BaseValue, 0.8500 AS UnitPrice FROM Factories WHERE ElecBase   > 0
     UNION ALL
-    SELECT FactoryId, N'水', WaterBase, CAST(3.2000 AS DECIMAL(10,4))  -- 例：水单价
-    FROM Factories
+    SELECT FactoryId, N'水'     AS EnergyType, WaterBase  AS BaseValue, 3.2000 AS UnitPrice FROM Factories WHERE WaterBase  > 0
     UNION ALL
-    SELECT FactoryId, N'蒸汽', SteamBase, CAST(210.0000 AS DECIMAL(10,4)) -- 例：蒸汽单价
-    FROM Factories
+    SELECT FactoryId, N'蒸汽'   AS EnergyType, SteamBase  AS BaseValue, 210.0000 AS UnitPrice FROM Factories WHERE SteamBase  > 0
     UNION ALL
-    SELECT FactoryId, N'天然气', GasBase, CAST(2.6000 AS DECIMAL(10,4))  -- 例：气单价
-    FROM Factories
+    SELECT FactoryId, N'天然气' AS EnergyType, GasBase    AS BaseValue, 2.6000 AS UnitPrice FROM Factories WHERE GasBase    > 0
+),
+-- 主计算逻辑
+Src AS (
+    SELECT
+        e.EnergyType,
+        e.FactoryId,
+        d.StatDate,
+        e.UnitPrice AS PeakValleyPrice,
+        -- 当天总量 = 基准量 × (1 + 随天增长2%) × (厂区固定扰动 ±3%)
+        e.BaseValue
+            * (1.0 + DATEDIFF(DAY, @StartDate, d.StatDate) * 0.02)
+            * (1.0 + ((e.FactoryId % 7) - 3) * 0.01)               AS TotalValue
+    FROM EnergyExpand e
+    CROSS JOIN Dates d
 )
-/* 插入近五天峰谷统计 */
-INSERT INTO PeakValleyEnergy
-(
+-- 最终插入 PeakValleyEnergy
+INSERT INTO PeakValleyEnergy (
     EnergyType, FactoryId, StatDate,
     SharpPeriodValue, PeakPeriodValue, FlatPeriodValue, ValleyPeriodValue,
     TotalValue, PeakValleyPrice, EnergyCost
 )
 SELECT
-    e.EnergyType,
-    e.FactoryId,
-    d.StatDate,
+    EnergyType,
+    FactoryId,
+    StatDate,
 
-    /* 当天总量 = 基准量 * (1 + 2% * 天序号) * (1 + 轻微厂区扰动) */
-    CAST(t.TotalValue * 0.12 AS DECIMAL(18,3)) AS SharpPeriodValue, -- 尖峰 12%
-    CAST(t.TotalValue * 0.38 AS DECIMAL(18,3)) AS PeakPeriodValue,  -- 高峰 38%
-    CAST(t.TotalValue * 0.32 AS DECIMAL(18,3)) AS FlatPeriodValue,  -- 平段 32%
-    CAST(t.TotalValue * 0.18 AS DECIMAL(18,3)) AS ValleyPeriodValue,-- 低谷 18%
+    ROUND(TotalValue * 0.12, 3) AS SharpPeriodValue,  -- 尖峰段 12%
+    ROUND(TotalValue * 0.38, 3) AS PeakPeriodValue,   -- 峰段   38%
+    ROUND(TotalValue * 0.32, 3) AS FlatPeriodValue,   -- 平段   32%
+    ROUND(TotalValue * 0.18, 3) AS ValleyPeriodValue, -- 谷段   18%
 
-    CAST(t.TotalValue AS DECIMAL(18,3)) AS TotalValue,
-    e.Price AS PeakValleyPrice,
-    CAST(t.TotalValue * e.Price AS DECIMAL(18,2)) AS EnergyCost
-FROM EnergyExpand e
-CROSS JOIN Dates d
-CROSS APPLY (
-    SELECT
-        /* 天序号：0~4 */
-        DATEDIFF(DAY, @StartDate, d.StatDate) AS DayIdx,
-        /* 厂区扰动：按厂区号做个稳定微扰(±3%以内) */
-        (1.0 + ((e.FactoryId % 7) - 3) * 0.01) AS FactoryBump
-) x
-CROSS APPLY (
-    SELECT
-        /* 若某厂区该能源基准为0，则当天总量为NULL -> 不插 */
-        CASE
-            WHEN e.BaseValue <= 0 THEN NULL
-            ELSE e.BaseValue * (1.0 + x.DayIdx * 0.02) * x.FactoryBump
-        END AS TotalValue
-) t
-WHERE t.TotalValue IS NOT NULL
-  AND NOT EXISTS (
-      SELECT 1
-      FROM PeakValleyEnergy p
-      WHERE p.EnergyType = e.EnergyType
-        AND p.FactoryId  = e.FactoryId
-        AND p.StatDate   = d.StatDate
-  )
+    ROUND(TotalValue, 3)                    AS TotalValue,
+    PeakValleyPrice,
+    ROUND(TotalValue * PeakValleyPrice, 2) AS EnergyCost
+FROM Src s
+WHERE NOT EXISTS (  -- 防重插
+    SELECT 1
+    FROM PeakValleyEnergy p
+    WHERE p.EnergyType = s.EnergyType
+      AND p.FactoryId  = s.FactoryId
+      AND p.StatDate   = s.StatDate
+)
+ORDER BY StatDate DESC, FactoryId, EnergyType
 OPTION (MAXRECURSION 10);
-
--- 插入的脏数据，为系统管理员服务
-INSERT INTO ElectricityPricePolicy (TimeStart, TimeEnd, PriceType)
-SELECT '00:00', '08:00', 'Valley' WHERE NOT EXISTS(SELECT 1 FROM ElectricityPricePolicy);
-INSERT INTO ElectricityPricePolicy (TimeStart, TimeEnd, PriceType)
-SELECT '08:00', '12:00', 'Peak' WHERE NOT EXISTS(SELECT 1 FROM ElectricityPricePolicy WHERE TimeStart='08:00');
-INSERT INTO ElectricityPricePolicy (TimeStart, TimeEnd, PriceType)
-SELECT '12:00', '00:00', 'Flat' WHERE NOT EXISTS(SELECT 1 FROM ElectricityPricePolicy WHERE TimeStart='12:00');
-
-
