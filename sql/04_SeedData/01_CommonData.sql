@@ -21,25 +21,35 @@ VALUES
 ('C04', '北部平原工厂', '北部市平原路92号'),
 ('C05', '中部枢纽工厂', '中部市枢纽路63号');
 
+--系统管理员            Admin
+--能源管理员            EnergyAdmin
+--运维人员             Maintainer
+--数据分析师            Analyst
+--企业管理层            Manager
+--运维工单管理员         WorkOrderAdmin
+
 INSERT INTO UserAccount (UserName, RealName, PasswordHash, Phone, RoleCode, IsLocked, FailedLoginCount)
 VALUES
 ('admin01', '张管理员', HASHBYTES('SHA2_256', '123456'), '13800138001', 'Admin', 0, 0),
+('admin02', '尤管理员', HASHBYTES('SHA2_256', '123456'), '13800138020', 'Admin', 0, 0),
 ('energy01', '李能源管理员', HASHBYTES('SHA2_256', '123456'), '13800138002', 'EnergyAdmin', 0, 0),
 ('energy02', '王能源管理员', HASHBYTES('SHA2_256', '123456'), '13800138003', 'EnergyAdmin', 0, 1),
+('energy03', '朱能源管理员', HASHBYTES('SHA2_256', '123456'), '13800138018', 'EnergyAdmin', 0, 0),
 ('maintain01', '赵运维', HASHBYTES('SHA2_256', '123456'), '13800138004', 'Maintainer', 0, 0),
 ('maintain02', '孙运维', HASHBYTES('SHA2_256', '123456'), '13800138005', 'Maintainer', 0, 2),
 ('maintain03', '周运维', HASHBYTES('SHA2_256', '123456'), '13800138006', 'Maintainer', 1, 5),
 ('maintain04', '吴运维', HASHBYTES('SHA2_256', '123456'), '13800138007', 'Maintainer', 0, 0),
 ('maintain05', '郑运维', HASHBYTES('SHA2_256', '123456'), '13800138008', 'Maintainer', 0, 0),
-('analyst01', '钱分析师', HASHBYTES('SHA2_256', '123456'), '13800138009', 'Analyst', 0, 0),
-('analyst02', '冯分析师', HASHBYTES('SHA2_256', '123456'), '13800138010', 'Analyst', 0, 0),
-('manager01', '陈经理', HASHBYTES('SHA2_256', '123456'), '13800138011', 'Manager', 0, 0),
-('manager02', '褚经理', HASHBYTES('SHA2_256', '123456'), '13800138012', 'Manager', 0, 0),
 ('maintain06', '卫运维', HASHBYTES('SHA2_256', '123456'), '13800138013', 'Maintainer', 0, 0),
 ('maintain07', '蒋运维', HASHBYTES('SHA2_256', '123456'), '13800138014', 'Maintainer', 0, 0),
 ('maintain08', '沈运维', HASHBYTES('SHA2_256', '123456'), '13800138015', 'Maintainer', 0, 3),
-('maintain09', '韩运维', HASHBYTES('SHA2_256', '123456'), '13800138016', 'Maintainer', 0, 0),
-('maintain10', '杨运维', HASHBYTES('SHA2_256', '123456'), '13800138017', 'Maintainer', 0, 0),
-('energy03', '朱能源管理员', HASHBYTES('SHA2_256', '123456'), '13800138018', 'Exergaming', 0, 0),
+('analyst01', '钱分析师', HASHBYTES('SHA2_256', '123456'), '13800138009', 'Analyst', 0, 0),
+('analyst02', '冯分析师', HASHBYTES('SHA2_256', '123456'), '13800138010', 'Analyst', 0, 0),
 ('analyst03', '秦分析师', HASHBYTES('SHA2_256', '123456'), '13800138019', 'Analyst', 0, 0),
-('admin02', '尤管理员', HASHBYTES('SHA2_256', '123456'), '13800138020', 'Admin', 0, 0);
+('manager01', '陈经理', HASHBYTES('SHA2_256', '123456'), '13800138011', 'Manager', 0, 0),
+('manager02', '褚经理', HASHBYTES('SHA2_256', '123456'), '13800138012', 'Manager', 0, 0),
+('workorderadmin01', '韩运维工单管理员', HASHBYTES('SHA2_256', '123456'), '13800138016', 'WorkOrderAdmin', 0, 0),
+('workorderadmin02', '杨运维工单管理员', HASHBYTES('SHA2_256', '123456'), '13800138017', 'WorkOrderAdmin', 0, 0);
+
+
+

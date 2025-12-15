@@ -1,3 +1,4 @@
+--默认运维id为6
 CREATE OR ALTER TRIGGER TR_Alarm_CreateWorkOrder
 ON Alarm
 AFTER INSERT
@@ -6,7 +7,7 @@ BEGIN
     SET NOCOUNT ON;
 
     INSERT INTO WorkOrder(AlarmId, MaintainerId, DispatchTime)
-    SELECT i.AlarmId, 4, SYSDATETIME()
+    SELECT i.AlarmId, 6, SYSDATETIME()
     FROM inserted i
     WHERE i.AlarmLevel = N'高'
       AND NOT EXISTS (SELECT 1 FROM WorkOrder w WHERE w.AlarmId = i.AlarmId);
