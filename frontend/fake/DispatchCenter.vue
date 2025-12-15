@@ -5,7 +5,7 @@
     <el-tabs v-model="activeTab" type="border-card">
 
       <el-tab-pane label="待处理告警" name="pending">
-        <el-table :data="pendingAlarms" style="width: 100%" v-loading="loading">
+        <el-table :data="pendingAlarms" style="width: 100%">
           <el-table-column prop="AlarmId" label="ID" width="60" />
           <el-table-column prop="OccurTime" label="时间" width="180" />
           <el-table-column prop="Content" label="告警内容" />
@@ -27,7 +27,7 @@
       </el-tab-pane>
 
       <el-tab-pane label="待复查工单" name="review">
-        <el-table :data="pendingReviews" style="width: 100%" v-loading="loading">
+        <el-table :data="pendingReviews" style="width: 100%">
           <el-table-column prop="WorkOrderId" label="工单ID" width="80" />
           <el-table-column prop="MaintainerName" label="运维人员" width="100" />
           <el-table-column prop="DispatchTime" label="派单时间" width="160" />
@@ -44,7 +44,7 @@
 
       <el-tab-pane label="工单进度监控" name="monitor">
         <p class="monitor-tip">当前显示超过 <span class="highlight-time">24 小时</span> 未完工的待处理工单。</p>
-        <el-table :data="monitoringOrders" style="width: 100%" v-loading="loading">
+        <el-table :data="monitoringOrders" style="width: 100%">
           <el-table-column prop="WorkOrderId" label="工单ID" width="80" />
           <el-table-column prop="MaintainerName" label="运维人员" width="100" />
           <el-table-column prop="DispatchTime" label="派单时间" width="160" />
@@ -60,7 +60,7 @@
     </el-tabs>
 
     <el-dialog v-model="dispatchDialogVisible" title="派发运维工单" width="400px">
-      <p>告警 ID: <strong>{{ currentAlarm ? currentAlarm.AlarmId : '' }}</strong></p>
+      <p>告警 ID: **{{ currentAlarm ? currentAlarm.AlarmId : '' }}**</p>
       <p>告警内容: {{ currentAlarm ? currentAlarm.Content : '' }}</p>
 
       <el-select v-model="selectedMaintainer" placeholder="请选择运维人员" style="width: 100%; margin-top: 15px;">
@@ -82,57 +82,44 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios' // 确保已安装: npm install axios
+// 假设这是您的封装的请求工具
+import request from '../../utils/request'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-// --- 状态变量 ---
+// --- 响应式数据定义 ---
 const activeTab = ref('pending')
-const loading = ref(false)
-const pendingAlarms = ref([]) // 待处理告警
-const pendingReviews = ref([]) // 待复查工单
-const monitoringOrders = ref([]) // 监控工单
+const pendingAlarms = ref([]) // 待处理告警 (Tab 1)
+const pendingReviews = ref([]) // 待复查工单 (Tab 2)
+const monitoringOrders = ref([]) // 监控工单 (Tab 3)
 const maintainers = ref([]) // 运维人员列表
 
-// 弹窗相关
+// 弹窗和派单相关数据
 const dispatchDialogVisible = ref(false)
-const currentAlarm = ref(null)
-const selectedMaintainer = ref(null)
+const currentAlarm = ref(null) // 当前要派单的告警信息
+const selectedMaintainer = ref(null) // 选中的运维人员ID
 
-// --- 修复点：直接配置 Axios 实例 ---
-// 你的后端运行在 localhost:8000，且此页面接口前缀大多为 /api/wo-admin
-const request = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
-  timeout: 5000
-})
-
-// --- 方法：数据加载 ---
+// --- 核心数据加载函数 ---
 const loadData = async () => {
-  loading.value = true
   try {
-    // 并发请求所有需要的数据，提高加载速度
-    const [alarmsRes, reviewsRes, maintainersRes, monitorRes] = await Promise.all([
-      request.get('/api/wo-admin/alarms/pending'),
-      request.get('/api/wo-admin/reviews/pending'),
-      request.get('/api/wo-admin/maintainers'),
-      request.get('/api/wo-admin/monitor?overdue_hours=24')
-    ])
+    // 1. 获取待处理告警
+    pendingAlarms.value = await request.get('/api/wo-admin/alarms/pending')
 
-    pendingAlarms.value = alarmsRes.data
-    pendingReviews.value = reviewsRes.data
-    maintainers.value = maintainersRes.data
-    monitoringOrders.value = monitorRes.data
+    // 2. 获取待复查工单
+    pendingReviews.value = await request.get('/api/wo-admin/reviews/pending')
+
+    // 3. 获取运维人员列表
+    maintainers.value = await request.get('/api/wo-admin/maintainers')
+
+    // 4. 获取监控工单 (例如：超时 24 小时未处理的)
+    monitoringOrders.value = await request.get('/api/wo-admin/monitor?overdue_hours=24')
 
   } catch (error) {
     console.error('数据加载失败:', error)
-    // 增加更友好的错误提示
-    const errorMsg = error.response?.data?.detail || '无法连接到服务器，请确认后端(端口8000)已启动。'
-    ElMessage.error(errorMsg)
-  } finally {
-    loading.value = false
+    ElMessage.error('数据加载失败，请检查后端服务连接。')
   }
 }
 
-// --- 业务逻辑：忽略误报 ---
+// --- 职责一：忽略误报 ---
 const dismissAlarm = async (row) => {
   try {
     await ElMessageBox.confirm(`确定要将告警 ID ${row.AlarmId} 标记为误报并关闭吗？`, '警告', {
@@ -141,6 +128,7 @@ const dismissAlarm = async (row) => {
       type: 'warning',
     })
 
+    // 提示管理员输入原因
     const { value: reason } = await ElMessageBox.prompt(
         '请输入忽略该告警的具体原因：',
         '误报忽略',
@@ -153,16 +141,18 @@ const dismissAlarm = async (row) => {
 
     await request.post('/api/wo-admin/alarm/dismiss', {
       alarm_id: row.AlarmId,
-      reason: reason
+      reason: reason // 使用管理员输入的具体原因
     })
     ElMessage.success('该告警已确认为误报并关闭。')
-    loadData() // 刷新
+    loadData() // 刷新列表
   } catch (e) {
-    if (e !== 'cancel') ElMessage.error('操作已取消或失败')
+    if (e !== 'cancel') {
+      ElMessage.error('忽略操作失败。')
+    }
   }
 }
 
-// --- 业务逻辑：派单 ---
+// --- 职责二：派单逻辑 ---
 const openDispatch = (row) => {
   currentAlarm.value = row
   selectedMaintainer.value = null
@@ -182,12 +172,11 @@ const confirmDispatch = async () => {
     dispatchDialogVisible.value = false
     loadData()
   } catch (error) {
-    console.error(error)
-    ElMessage.error(error.response?.data?.detail || '派单失败')
+    ElMessage.error('派单失败。')
   }
 }
 
-// --- 业务逻辑：催办 ---
+// --- 职责二 (扩展)：催办提醒 ---
 const remindMaintainer = async (row) => {
   try {
     const message = `工单 ${row.WorkOrderId} 已超过 24 小时未处理，请尽快响应。`
@@ -197,15 +186,16 @@ const remindMaintainer = async (row) => {
     })
     ElMessage.success(`已向运维人员 ${row.MaintainerName} 发送催办提醒。`)
   } catch (error) {
-    ElMessage.error('发送提醒失败')
+    ElMessage.error('发送提醒失败。')
   }
 }
 
-// --- 业务逻辑：审核工单 ---
+// --- 职责三：审核工单 ---
 const auditOrder = async (row, isPassed) => {
   let comment = ""
   try {
     if (!isPassed) {
+      // 驳回，强制输入原因
       const { value } = await ElMessageBox.prompt(`驳回工单 ${row.WorkOrderId}，请说明原因：`, '工单驳回', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -224,37 +214,32 @@ const auditOrder = async (row, isPassed) => {
     if (isPassed) {
       ElMessage.success('工单审核通过，已结案。')
     } else {
-      ElMessage.warning('工单已驳回！关联告警已重置。')
+      ElMessage.warning('工单已驳回！关联告警已重置，请回到“待处理告警”标签页重新派单。')
     }
-    loadData()
+
+    loadData() // 刷新列表
 
   } catch (e) {
-    if (e !== 'cancel') ElMessage.error('审核操作失败')
+    if (e === 'cancel') return
+    ElMessage.error('审核操作失败。')
   }
 }
 
-// --- 生命周期 ---
+// 组件挂载时执行数据初始化
 onMounted(() => {
   loadData()
 })
 </script>
 
 <style scoped>
-.dispatch-container { padding: 20px; background-color: #fff; min-height: 80vh; }
+.dispatch-container { padding: 20px; }
 .monitor-tip {
   margin-bottom: 15px;
   font-size: 14px;
   color: #606266;
-  background: #fdf6ec;
-  padding: 8px 15px;
-  border-radius: 4px;
 }
 .highlight-time {
   font-weight: bold;
-  color: #E6A23C;
-}
-h2 {
-  margin-bottom: 20px;
-  color: #303133;
+  color: #E6A23C; /* 警告色 */
 }
 </style>

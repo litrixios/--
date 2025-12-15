@@ -15,14 +15,14 @@ const routes = [
       {
         path: 'dispatch-center',
         component: () => import('../views/wo-admin/DispatchCenter.vue'),
-        meta: { title: '调度中心', role: '运维工单管理员' }
+        meta: { title: '调度中心', role: 'WorkOrderAdmin' }
       },
 
       // 运维人员专属页面
       {
         path: 'my-tasks',
         component: () => import('../views/operator/MyTasks.vue'),
-        meta: { title: '我的工单', role: '运维人员' }
+        meta: { title: '我的工单', role: 'Maintainer' }
       }
     ]
   }

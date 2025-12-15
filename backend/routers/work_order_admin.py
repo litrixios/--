@@ -18,7 +18,7 @@ def get_pending_alarms():
         sql = """
             SELECT A.*, D.AssetName 
             FROM Alarm A
-            LEFT JOIN EquipmentAsset D ON A.RelatedDeviceId = D.AssetId
+            LEFT JOIN EquipmentAsset D ON A.RelatedDeviceCode = D.RelatedDeviceCode
             WHERE A.ProcessStatus = N'未处理'
             ORDER BY A.OccurTime DESC
         """
