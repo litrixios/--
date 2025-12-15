@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from backend.database import get_conn
 from backend.models import AuditRequest
 
-router = APIRouter(prefix="/api/manager", tags=["能源管理员"])
+router = APIRouter(prefix="/api/energy_manager", tags=["能源管理员"])
 
 @router.get("/report")
 def get_energy_report(area_name: str = None):
