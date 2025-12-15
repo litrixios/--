@@ -15,7 +15,14 @@ CREATE TABLE EnergyMeter (
     CONSTRAINT CK_EnergyMeter_Status CHECK (RunStatus IN (N'正常', N'故障'))
 );
 
-
+-- 插入的新表，为系统管理员服务
+-- 2. 电价时段配置表
+CREATE TABLE ElectricityPricePolicy (
+    PolicyId INT IDENTITY(1,1) PRIMARY KEY,
+    TimeStart TIME(0),         -- 例如 10:00:00
+    TimeEnd TIME(0),           -- 例如 12:00:00
+    PriceType NVARCHAR(10)     -- '尖峰'/'高峰'/'平段'/'低谷'
+);
 
 
 
