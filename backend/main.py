@@ -3,15 +3,19 @@ import uvicorn
 from fastapi import FastAPI
 
 # 导入拆分出去的模块
-from backend.routers import energymanager
+from backend.routers import energy_manager
+from backend.routers import operator
+from backend.routers import admin
+from backend.routers import work_order_admin
 
 app = FastAPI(title="智慧能源管理系统 API")
 
 # 注册路由器
 # 这样 manager.py 里的接口就正式生效了
-app.include_router(energymanager.router)
-# app.include_router(admin.router)    # 等写了 admin.py 再取消注释
-# app.include_router(operator.router) # 等写了 operator.py 再取消注释
+app.include_router(energy_manager.router)
+app.include_router(operator.router)
+app.include_router(admin.router)
+app.include_router(work_order_admin.router)
 
 @app.get("/")
 def root():
