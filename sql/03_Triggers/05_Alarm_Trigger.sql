@@ -1,22 +1,24 @@
-CREATE TRIGGER TR_Alarm_CreateWorkOrder
+CREATE OR ALTER TRIGGER TR_Alarm_CreateWorkOrder
 ON Alarm
 AFTER INSERT
 AS
 BEGIN
-   SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
     INSERT INTO WorkOrder(AlarmId, MaintainerId, DispatchTime)
-    SELECT i.AlarmId, 1, SYSDATETIME()
+    SELECT i.AlarmId, 4, SYSDATETIME()
     FROM inserted i
-    WHERE i.AlarmLevel = N'高';
+    WHERE i.AlarmLevel = N'高'
+      AND NOT EXISTS (SELECT 1 FROM WorkOrder w WHERE w.AlarmId = i.AlarmId);
 
-    -- 自动将高等级告警状态改为“处理中”
-    UPDATE a SET ProcessStatus = N'处理中'
+    UPDATE a
+    SET ProcessStatus = N'处理中'
     FROM Alarm a
     INNER JOIN inserted i ON a.AlarmId = i.AlarmId
     WHERE i.AlarmLevel = N'高';
 END;
 GO
+
 --工单复查通过后自动结案告警
 CREATE TRIGGER TR_WorkOrder_ReviewPass_CloseAlarm
 ON WorkOrder
