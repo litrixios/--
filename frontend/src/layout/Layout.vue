@@ -6,11 +6,11 @@
 
         <el-menu-item index="/dashboard">首页</el-menu-item>
 
-        <el-menu-item v-if="role === '运维工单管理员'" index="/dispatch-center">
+        <el-menu-item v-if="role === 'WorkOrderAdmin'" index="/dispatch-center">
           调度中心 (审核/派单)
         </el-menu-item>
 
-        <el-menu-item v-if="role === '运维人员'" index="/my-tasks">
+        <el-menu-item v-if="role === 'Maintainer'" index="/my-tasks">
           我的维修任务
         </el-menu-item>
 
