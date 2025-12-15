@@ -88,3 +88,13 @@ CREATE TABLE TransformerMeasurement (
 );
 CREATE INDEX IX_TransformerMeasurement_Time
     ON TransformerMeasurement(SubstationId, TransformerId, CollectTime);
+
+-- 插入的新表，为系统管理员服务
+-- 1. 告警阈值配置表
+CREATE TABLE AlarmThresholdConfig (
+    RuleId INT IDENTITY(1,1) PRIMARY KEY,
+    DeviceType NVARCHAR(20),   -- 例如 '变压器'
+    MetricName NVARCHAR(50),   -- 例如 '绕组温度'
+    ThresholdValue DECIMAL(18,2), -- 例如 120.00
+    AlarmLevel NVARCHAR(10)    -- 例如 '高'
+);

@@ -235,3 +235,8 @@ VALUES
 (21, 31, '2025-11-28 09:10:00', 68.50, 91.20, 75.50, 23.20, 63.20, N'正常'),
 (22, 32, '2025-11-28 09:10:00', 83.50, 103.80, 85.20, 22.80, 63.80, N'正常'),
 (23, 33, '2025-11-28 09:10:00', 88.20, 108.50, 89.50, 22.50, 64.20, N'正常');
+
+-- 插入的脏数据，为系统管理员服务
+INSERT INTO AlarmThresholdConfig (DeviceType, MetricName, ThresholdValue, AlarmLevel)
+SELECT N'变压器', N'绕组温度', 120, N'高'
+WHERE NOT EXISTS(SELECT 1 FROM AlarmThresholdConfig);
