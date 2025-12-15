@@ -74,3 +74,20 @@ VALUES
 (18, 7, '2025-11-28 22:40:00', '2025-11-28 23:05:00', '2025-11-29 00:30:00', N'逆变器通讯模块更换，数据恢复正常', N'通过', NULL),
 (19, 8, '2025-11-28 23:25:00', '2025-11-28 23:50:00', '2025-11-29 02:15:00', N'变压器室通风改善，环境温度下降', N'通过', NULL),
 (20, 9, '2025-11-29 00:20:00', '2025-11-29 00:45:00', NULL, N'水表校准设备准备中', N'通过', NULL);
+
+
+-- 测试用脏数据
+-- 1.人员
+
+-- 2. 插入设备台账 (EquipmentAsset)
+INSERT INTO EquipmentAsset (AssetName, EquipmentType, ModelSpec, InstallTime, WarrantyYears, ScrapStatus)
+VALUES
+(N'1#变压器', N'变压器', N'SCB10-1000/10', '2020-01-01', 5, N'正常使用'),
+(N'2#光伏逆变器', N'逆变器', N'SG100CX', '2023-05-01', 2, N'正常使用');
+
+-- 3. 插入告警数据 (Alarm)
+-- 一条高危（待处理），一条低危（已结案）
+INSERT INTO Alarm (AlarmType, OccurTime, AlarmLevel, Content, ProcessStatus, RelatedDeviceType, RelatedDeviceId)
+VALUES
+(N'越限告警', '2025-12-02 08:30:00', N'高', N'1#变压器 油温过高(95℃)', N'未处理', N'变压器', 1),
+(N'通讯故障', '2025-12-01 10:00:00', N'低', N'2#逆变器 通讯中断', N'已结案', N'逆变器', 2);
