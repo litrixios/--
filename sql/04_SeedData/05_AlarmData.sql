@@ -305,3 +305,90 @@ FROM Alarm a
 WHERE a.AlarmLevel IN (N'中', N'低') AND a.RelatedDeviceCode = 'EM-B01-003'
 ORDER BY a.AlarmId DESC;
 
+
+-- ========= 给尚无工单的 6 条报警补派“超24小时未响应”工单 =========
+INSERT INTO WorkOrder
+(
+    AlarmId,
+    MaintainerId,
+    DispatchTime,
+    ResponseTime,
+    CompleteTime,
+    ResultDesc,
+    ReviewStatus,
+    AttachmentPath
+)
+SELECT TOP (2)
+    a.AlarmId,
+    6 AS MaintainerId,  -- 统一指定一个运维人员，也可按需调整
+    DATEADD(HOUR, 26, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
+    NULL AS ResponseTime,
+    NULL AS CompleteTime,
+    NULL AS ResultDesc,
+    N'未通过' AS ReviewStatus,
+    NULL AS AttachmentPath
+FROM Alarm a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM WorkOrder w
+    WHERE w.AlarmId = a.AlarmId
+)
+ORDER BY a.OccurTime ASC;
+
+INSERT INTO WorkOrder
+(
+    AlarmId,
+    MaintainerId,
+    DispatchTime,
+    ResponseTime,
+    CompleteTime,
+    ResultDesc,
+    ReviewStatus,
+    AttachmentPath
+)
+SELECT TOP (2)
+    a.AlarmId,
+    11 AS MaintainerId,  -- 统一指定一个运维人员，也可按需调整
+    DATEADD(HOUR, 27, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
+    NULL AS ResponseTime,
+    NULL AS CompleteTime,
+    NULL AS ResultDesc,
+    N'未通过' AS ReviewStatus,
+    NULL AS AttachmentPath
+FROM Alarm a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM WorkOrder w
+    WHERE w.AlarmId = a.AlarmId
+)
+ORDER BY a.OccurTime ASC;
+
+INSERT INTO WorkOrder
+(
+    AlarmId,
+    MaintainerId,
+    DispatchTime,
+    ResponseTime,
+    CompleteTime,
+    ResultDesc,
+    ReviewStatus,
+    AttachmentPath
+)
+SELECT TOP (2)
+    a.AlarmId,
+    10 AS MaintainerId,  -- 统一指定一个运维人员，也可按需调整
+    DATEADD(HOUR, 26, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
+    NULL AS ResponseTime,
+    NULL AS CompleteTime,
+    NULL AS ResultDesc,
+    N'未通过' AS ReviewStatus,
+    NULL AS AttachmentPath
+FROM Alarm a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM WorkOrder w
+    WHERE w.AlarmId = a.AlarmId
+)
+ORDER BY a.OccurTime ASC;
+
+
