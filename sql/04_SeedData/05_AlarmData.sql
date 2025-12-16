@@ -321,7 +321,7 @@ INSERT INTO WorkOrder
 SELECT TOP (2)
     a.AlarmId,
     6 AS MaintainerId,  -- 统一指定一个运维人员，也可按需调整
-    DATEADD(HOUR, 26, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
+    DATEADD(HOUR, -25, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
     NULL AS ResponseTime,
     NULL AS CompleteTime,
     NULL AS ResultDesc,
@@ -349,7 +349,7 @@ INSERT INTO WorkOrder
 SELECT TOP (2)
     a.AlarmId,
     11 AS MaintainerId,  -- 统一指定一个运维人员，也可按需调整
-    DATEADD(HOUR, 27, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
+    DATEADD(HOUR, -27, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
     NULL AS ResponseTime,
     NULL AS CompleteTime,
     NULL AS ResultDesc,
@@ -377,7 +377,7 @@ INSERT INTO WorkOrder
 SELECT TOP (2)
     a.AlarmId,
     10 AS MaintainerId,  -- 统一指定一个运维人员，也可按需调整
-    DATEADD(HOUR, 26, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
+    DATEADD(HOUR, -26, SYSDATETIME()) AS DispatchTime, -- 超出当前时间24小时
     NULL AS ResponseTime,
     NULL AS CompleteTime,
     NULL AS ResultDesc,
