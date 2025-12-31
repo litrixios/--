@@ -45,6 +45,12 @@ const routes = [
         path: 'my-tasks',
         component: () => import('../views/operator/MyTasks.vue'),
         meta: { title: '我的工单', role: 'Maintainer' }
+      },
+      // --- 数据分析师专属页面 (Analyst) ---
+      {
+        path: 'analysis/report',
+        component: () => import('../views/analyst/AnalystView.vue'), // 确保路径正确
+        meta: { title: '数据深度分析', role: 'Analyst' } // 角色名需匹配数据库
       }
     ]
   }

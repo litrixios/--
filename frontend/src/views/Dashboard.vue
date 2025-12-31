@@ -79,6 +79,14 @@
               </el-button>
             </div>
 
+            <div v-if="role === '数据分析师' || role === 'Analyst'" class="tip-box analyst-tip">
+              <h4>📊 数据预言指令</h4>
+              <p>光伏电量对不上，能耗曲线在梦游，<br>全厂的节能KPI都压在你肩上了！</p>
+              <el-button type="success" @click="$router.push('/analysis/report')">
+                开始深度分析 (去头秃)
+              </el-button>
+            </div>
+
             <div v-if="!['运维工单管理员', 'WorkOrderAdmin', '运维人员', 'Maintainer'].includes(role) && !role.includes('运维')" class="tip-box">
               <p>你好像没有分配具体的搬砖任务，<br>建议摸鱼。</p>
             </div>
@@ -256,6 +264,16 @@ const userRealName = ref(localStorage.getItem('username') || '打工人')
 .system-tip {
   background-color: #fef0f0; /* 浅红色 */
   border: 1px solid #fde2e2;
+}
+
+/* 在 style 标签内新增 */
+.analyst-tip {
+  background-color: #f0f9eb; /* 浅绿色，代表节能环保 */
+  border: 1px solid #e1f3d8;
+}
+
+.analyst-tip h4 {
+  color: #67c23a;
 }
 
 .system-tip h4 {

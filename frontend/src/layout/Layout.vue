@@ -20,6 +20,10 @@
           我的维修任务
         </el-menu-item>
 
+        <el-menu-item v-if="role === '数据分析师' || role === 'Analyst'" index="/analysis/report">
+          数据挖掘与深度分析
+        </el-menu-item>
+
         <el-menu-item @click="logout">退出登录</el-menu-item>
       </el-menu>
     </el-aside>

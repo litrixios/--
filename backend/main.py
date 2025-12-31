@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware # 别忘了跨域
 
 # 导入路由
-from backend.routers import energy_manager
+from backend.routers import energy_manager, analyst
 from backend.routers import operator
 from backend.routers import admin
 from backend.routers import work_order_admin
@@ -25,6 +25,7 @@ app.include_router(energy_manager.router)
 app.include_router(operator.router)
 app.include_router(admin.router)
 app.include_router(work_order_admin.router)
+app.include_router(analyst.router)
 app.include_router(auth.router) # 👈 注册登录路由
 
 @app.get("/")
