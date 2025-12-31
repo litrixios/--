@@ -1,6 +1,6 @@
 # backend/models.py
 from pydantic import BaseModel
-
+from typing import List
 # ==========================================
 # 登录认证模型
 # ==========================================
@@ -62,6 +62,10 @@ class UserResetPwdRequest(BaseModel):
     user_id: int
     new_password: str
 
+class PermissionAssignment(BaseModel):
+    user_id: int
+    object_type: str
+    object_ids: List[int]
 # ==========================================
 # 系统管理员 - 规则配置模型
 # ==========================================
