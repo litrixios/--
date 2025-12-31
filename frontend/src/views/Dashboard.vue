@@ -71,6 +71,14 @@
               </el-button>
             </div>
 
+            <div v-if="role === 'Admin'" class="tip-box system-tip">
+              <h4>🛠️ 最高权限指令</h4>
+              <p>数据库还没备份，账号还没审核，<br>你竟然在这看小牛马？</p>
+              <el-button type="danger" @click="$router.push('/system-admin')">
+                进入管理后台 (去坐牢)
+              </el-button>
+            </div>
+
             <div v-if="!['运维工单管理员', 'WorkOrderAdmin', '运维人员', 'Maintainer'].includes(role) && !role.includes('运维')" class="tip-box">
               <p>你好像没有分配具体的搬砖任务，<br>建议摸鱼。</p>
             </div>
@@ -113,7 +121,6 @@ const userRealName = ref(localStorage.getItem('username') || '打工人')
   color: #303133;
 }
 
-/* --- 恶搞卡片样式 --- */
 .meme-card {
   background: linear-gradient(135deg, #fff 0%, #fdf6ec 100%);
   border: 2px dashed #e6a23c; /* 虚线边框，像便签 */
@@ -244,5 +251,14 @@ const userRealName = ref(localStorage.getItem('username') || '打工人')
   font-size: 13px;
   color: #666;
   margin-bottom: 15px;
+}
+/* 在 style 底部新增一个管理员专属的紫色/红色调样式 */
+.system-tip {
+  background-color: #fef0f0; /* 浅红色 */
+  border: 1px solid #fde2e2;
+}
+
+.system-tip h4 {
+  color: #f56c6c;
 }
 </style>

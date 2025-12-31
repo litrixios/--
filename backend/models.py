@@ -48,8 +48,9 @@ class UserAddRequest(BaseModel):
 # 2. 修改用户信息 (改手机号、角色)
 class UserUpdateRequest(BaseModel):
     user_id: int
-    phone: str = None
-    role_code: str = None
+    real_name: str
+    phone: str
+    role_code: str
 
 # 3. 锁定/解锁用户
 class UserLockRequest(BaseModel):

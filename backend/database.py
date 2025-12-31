@@ -5,7 +5,7 @@ import pymssql
 DB_SETTINGS = {
     "server": "127.0.0.1",
     "user": "sa",
-    "password": "123456888", # ⚠️ 记得填你的密码
+    "password": "zhouji2004", # ⚠️ 记得填你的密码
     "database": "SmartEnergyDB",
     # "charset": "CP936"
 }
