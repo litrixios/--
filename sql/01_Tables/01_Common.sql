@@ -16,3 +16,14 @@ CREATE TABLE UserAccount (
     FailedLoginCount INT NOT NULL DEFAULT 0,
     LastFailedTime DATETIME2(0) NULL
 );
+
+CREATE TABLE UserPermissionScope (
+                                     ScopeId INT PRIMARY KEY IDENTITY(1,1),  -- 自增主键
+                                     UserId INT NOT NULL,                    -- 用户ID (关联 UserAccount)
+                                     ObjectType VARCHAR(50) NOT NULL,        -- 对象类型: 'Factory', 'Substation', 'PvGridPoint'
+                                     ObjectId INT NOT NULL,                  -- 对应的业务表主键ID
+                                     CreateTime DATETIME DEFAULT GETDATE(),
+
+    -- 建立外键约束（可选，保证数据准确）
+                                     CONSTRAINT FK_UserScope FOREIGN KEY (UserId) REFERENCES UserAccount(UserId) ON DELETE CASCADE
+);

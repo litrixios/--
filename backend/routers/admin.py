@@ -6,7 +6,7 @@ from backend.database import get_conn, DB_SETTINGS
 # 仅导入存在的模型，去掉了导致报错的 PermissionAssignment
 from backend.models import (
     UserAddRequest, UserUpdateRequest, UserLockRequest, UserResetPwdRequest,
-    AlarmRuleUpdateRequest, PricePolicyUpdateRequest, BackupRequest, RestoreRequest
+    AlarmRuleUpdateRequest, PricePolicyUpdateRequest, BackupRequest, RestoreRequest, PermissionAssignment
 )
 
 router = APIRouter(prefix="/api/admin", tags=["系统管理员"])
@@ -197,5 +197,79 @@ def delete_user(user_id: int):
         cursor.execute("DELETE FROM UserAccount WHERE UserId = %d", (user_id,))
         conn.commit()
         return {"msg": "用户已删除"}
+    finally:
+        conn.close()
+
+# ==========================================
+# 权限管理：1. 获取所有可分配的业务对象
+# ==========================================
+@router.get("/permission/objects")
+def get_assignable_objects():
+    """获取系统中所有可以被分配权限的对象清单"""
+    conn = get_conn()
+    cursor = conn.cursor(as_dict=True)
+    try:
+        # 获取工厂列表
+        cursor.execute("SELECT FactoryId as id, Name as name, 'Factory' as type FROM FactoryArea")
+        factories = cursor.fetchall()
+
+        # 获取配电房列表
+        cursor.execute("SELECT SubstationId as id, Name as name, 'Substation' as type FROM Substation")
+        substations = cursor.fetchall()
+
+        # 获取光伏点列表
+        cursor.execute("SELECT GridPointId as id, Name as name, 'PvGridPoint' as type FROM PvGridPoint")
+        pv_points = cursor.fetchall()
+
+        return {
+            "factories": factories,
+            "substations": substations,
+            "pv_points": pv_points
+        }
+    finally:
+        conn.close()
+
+# ==========================================
+# 权限管理：2. 保存权限分配结果 (核心逻辑)
+# ==========================================
+@router.post("/user/assign-scope")
+def assign_user_scope(request: PermissionAssignment):
+    """
+    保存用户管辖范围：先清空该用户该类型的旧权限，再插入新权限
+    """
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        # 1. 开启事务：删除旧的绑定关系
+        delete_sql = "DELETE FROM UserPermissionScope WHERE UserId = %s AND ObjectType = %s"
+        cursor.execute(delete_sql, (request.user_id, request.object_type))
+
+        # 2. 批量插入新的绑定关系
+        if request.object_ids:
+            insert_sql = "INSERT INTO UserPermissionScope (UserId, ObjectType, ObjectId) VALUES (%s, %s, %s)"
+            # 构建批量插入的数据元组列表
+            params = [(request.user_id, request.object_type, oid) for oid in request.object_ids]
+            cursor.executemany(insert_sql, params)
+
+        conn.commit()
+        return {"msg": f"已成功分配 {len(request.object_ids)} 个对象的管辖权"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"保存权限失败: {str(e)}")
+    finally:
+        conn.close()
+
+# ==========================================
+# 权限管理：3. 获取某个用户已有的权限
+# ==========================================
+@router.get("/user/permissions/{user_id}")
+def get_user_permissions(user_id: int):
+    """回显：查看用户当前管辖了哪些点"""
+    conn = get_conn()
+    cursor = conn.cursor(as_dict=True)
+    try:
+        sql = "SELECT ObjectType, ObjectId FROM UserPermissionScope WHERE UserId = %s"
+        cursor.execute(sql, (user_id,))
+        return cursor.fetchall()
     finally:
         conn.close()
