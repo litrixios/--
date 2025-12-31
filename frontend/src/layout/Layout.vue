@@ -6,6 +6,12 @@
 
         <el-menu-item index="/dashboard">首页</el-menu-item>
 
+        <template v-if="role === 'Admin'">
+          <el-menu-item index="/system/users">用户账号维护</el-menu-item>
+          <el-menu-item index="/system/config">参数策略配置</el-menu-item>
+          <el-menu-item index="/system/db">数据库运维</el-menu-item>
+        </template>
+
         <el-menu-item v-if="role === 'WorkOrderAdmin'" index="/dispatch-center">
           调度中心 (审核/派单)
         </el-menu-item>
