@@ -180,6 +180,13 @@ def audit_work_order(req: WorkOrderReviewRequest):
                 WHERE WorkOrderId = %d
             """
             cursor.execute(sql, (req.work_order_id,))
+            # 关键：同步将告警设为已结案
+            sql_alarm = """
+                        UPDATE Alarm
+                        SET ProcessStatus = N'已结案'
+                        WHERE AlarmId = (SELECT AlarmId FROM WorkOrder WHERE WorkOrderId = %d) \
+                        """
+            cursor.execute(sql_alarm, (req.work_order_id,))
             msg = "审核通过，工单流程结束"
 
         else:
