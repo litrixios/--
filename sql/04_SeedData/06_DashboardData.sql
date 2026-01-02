@@ -1,14 +1,14 @@
--- 1. 清理环境（可选）
-TRUNCATE TABLE HistoryTrend;
-TRUNCATE TABLE RealtimeSummary;
-TRUNCATE TABLE DashboardConfig;
+-- =============================================
+-- 0) 清理（按需）
+-- =============================================
+TRUNCATE TABLE dbo.HistoryTrend;
+TRUNCATE TABLE dbo.RealtimeSummary;
+TRUNCATE TABLE dbo.DashboardConfig;
 GO
 
 -- =============================================
--- 2. 插入 DashboardConfig (仪表盘配置)
--- 策略：ModuleCode 用中文，时间统一为秒
+-- 1) DashboardConfig 扩充
 -- =============================================
-
 INSERT INTO DashboardConfig (ModuleCode, RefreshIntervalSeconds, DisplayFields, SortRule, PermissionLevel)
 VALUES
 -- 1分钟 (60秒) 刷新一次
@@ -28,64 +28,168 @@ VALUES
 GO
 
 -- =============================================
--- 3. 插入 RealtimeSummary (实时汇总 - 分钟级)
--- 场景模拟：2025-11-30 上午 10点到10点半
--- 逻辑：能耗累加，光伏发电增加，中间出现一次告警
+-- 2) HistoryTrend 大量数据：两年日数据（5种能源）
+--    时间范围：2024-01-01 ~ 2025-12-31
 -- =============================================
+DECLARE @StartDate DATE = '2024-01-01';
+DECLARE @EndDate   DATE = '2025-12-31';
 
-INSERT INTO RealtimeSummary (StatTime, TotalElectricityKWh, TotalWaterM3, TotalSteamT, TotalGasM3, TotalPvGenerationKWh, PvSelfUseKWh, TotalAlarmCount, HighAlarmCount, MediumAlarmCount, LowAlarmCount)
-VALUES
--- 10:00:00 正常运行
-('2025-11-30 10:00:00', 15000.00, 500.00, 100.00, 2000.00, 800.00, 780.00, 0, 0, 0, 0),
-
--- 10:05:00 用电量增加 120度
-('2025-11-30 10:05:00', 15120.50, 502.10, 101.20, 2010.50, 850.50, 820.50, 0, 0, 0, 0),
-
--- 10:10:00 用电量增加 130度
-('2025-11-30 10:10:00', 15250.80, 505.50, 102.50, 2025.00, 910.00, 880.00, 0, 0, 0, 0),
-
--- 10:15:00 【突发】出现1个高危告警，2个中危告警
-('2025-11-30 10:15:00', 15400.20, 508.80, 104.00, 2040.20, 980.50, 950.00, 3, 1, 2, 0),
-
--- 10:20:00 告警持续中，用电量继续攀升
-('2025-11-30 10:20:00', 15550.60, 512.00, 105.50, 2055.80, 1050.20, 1000.00, 3, 1, 2, 0),
-
--- 10:25:00 告警已处理（数量归零），光伏发电效率提升
-('2025-11-30 10:25:00', 15700.10, 515.20, 107.10, 2070.10, 1120.80, 1080.50, 0, 0, 0, 0);
+;WITH N AS (
+    SELECT 0 AS n
+    UNION ALL SELECT n + 1 FROM N WHERE DATEADD(DAY, n + 1, @StartDate) <= @EndDate
+),
+D AS (
+    SELECT DATEADD(DAY, n, @StartDate) AS d
+    FROM N
+),
+E AS (
+    SELECT v.EnergyType, v.BaseVal, v.IndustryAvg
+    FROM (VALUES
+        (N'电',     42000.0, 41000.0),
+        (N'水',       800.0,   750.0),
+        (N'蒸汽',     120.0,   110.0),
+        (N'天然气',  2100.0,  2000.0),
+        (N'光伏',    5000.0,  4600.0)
+    ) v(EnergyType, BaseVal, IndustryAvg)
+),
+Daily AS (
+    SELECT
+        e.EnergyType,
+        N'日' AS PeriodType,
+        d.d AS StatTime,
+        -- 造数逻辑：基线 + 季节性/周期性 + 随机扰动 + 周末下降（更贴近工厂场景）
+        CONVERT(DECIMAL(18,3),
+            CASE
+                WHEN e.EnergyType = N'光伏' THEN
+                    -- 光伏：冬季偏低、夏季偏高（用月份粗略模拟），再加扰动
+                    (e.BaseVal
+                     * CASE WHEN MONTH(d.d) IN (12,1,2) THEN 0.65
+                            WHEN MONTH(d.d) IN (6,7,8)  THEN 1.15
+                            ELSE 1.00 END
+                     + (ABS(CHECKSUM(NEWID())) % 800) - 400
+                    )
+                ELSE
+                    -- 非光伏：周末低、工作日高，再加扰动
+                    (e.BaseVal
+                     * CASE WHEN DATENAME(WEEKDAY, d.d) IN (N'星期六', N'星期日') THEN 0.65 ELSE 1.00 END
+                     + (ABS(CHECKSUM(NEWID())) % 1200) - 600
+                    )
+            END
+        ) AS Value,
+        CONVERT(DECIMAL(18,3), e.IndustryAvg) AS IndustryAvgValue
+    FROM D d
+    CROSS JOIN E e
+)
+INSERT INTO dbo.HistoryTrend (EnergyType, PeriodType, StatTime, Value, IndustryAvgValue, YoYRate, MoMRate, TrendFlag)
+SELECT EnergyType, PeriodType, StatTime,
+       CASE WHEN Value < 0 THEN 0 ELSE Value END,  -- 防止极端扰动产生负数
+       IndustryAvgValue,
+       NULL, NULL, N'平稳'  -- 先占位，后面统一重算
+FROM Daily
+OPTION (MAXRECURSION 0);
 GO
 
 -- =============================================
--- 4. 插入 HistoryTrend (历史趋势 - 日报)
--- 场景模拟：过去7天的数据，用于 ECharts 折线图
--- 包含：电、水、光伏
+-- 3) 由“日”自动聚合生成“周 / 月”
+--    周：以 StatTime 所在周的周一作为周标识（简单一致）
+--    月：每月1号作为月标识
 -- =============================================
+-- 周
+INSERT INTO dbo.HistoryTrend (EnergyType, PeriodType, StatTime, Value, IndustryAvgValue, YoYRate, MoMRate, TrendFlag)
+SELECT
+    EnergyType,
+    N'周' AS PeriodType,
+    DATEADD(DAY, 1 - DATEPART(WEEKDAY, StatTime), StatTime) AS WeekStart,  -- 简易周起点（受 DATEFIRST 影响，但一致即可）
+    CONVERT(DECIMAL(18,3), SUM(Value)) AS Value,
+    CONVERT(DECIMAL(18,3), AVG(IndustryAvgValue)) AS IndustryAvgValue,
+    NULL, NULL, N'平稳'
+FROM dbo.HistoryTrend
+WHERE PeriodType = N'日'
+GROUP BY EnergyType, DATEADD(DAY, 1 - DATEPART(WEEKDAY, StatTime), StatTime);
 
-INSERT INTO HistoryTrend (EnergyType, PeriodType, StatTime, Value, YoYRate, MoMRate, IndustryAvgValue, TrendFlag)
-VALUES
--- === 电 (单位 KWh) ===
-('电', '日', '2025-11-24', 42000.00, 2.5, 1.2, 41000.00, '能耗上升'),
-('电', '日', '2025-11-25', 43500.00, 3.0, 3.5, 41000.00, '能耗上升'),
-('电', '日', '2025-11-26', 41000.00, -1.5, -5.7, 41500.00, '能耗下降'),
-('电', '日', '2025-11-27', 45000.00, 8.5, 9.7, 42000.00, '能耗上升'), -- 峰值
-('电', '日', '2025-11-28', 44000.00, 6.2, -2.2, 42000.00, '能耗下降'),
-('电', '日', '2025-11-29', 28000.00, -10.5, -36.3, 38000.00, '能耗下降'), -- 周六休息
-('电', '日', '2025-11-30', 26000.00, -12.0, -7.1, 38000.00, '能耗下降'), -- 周日休息
+-- 月
+INSERT INTO dbo.HistoryTrend (EnergyType, PeriodType, StatTime, Value, IndustryAvgValue, YoYRate, MoMRate, TrendFlag)
+SELECT
+    EnergyType,
+    N'月' AS PeriodType,
+    DATEFROMPARTS(YEAR(StatTime), MONTH(StatTime), 1) AS MonthStart,
+    CONVERT(DECIMAL(18,3), SUM(Value)) AS Value,
+    CONVERT(DECIMAL(18,3), AVG(IndustryAvgValue)) AS IndustryAvgValue,
+    NULL, NULL, N'平稳'
+FROM dbo.HistoryTrend
+WHERE PeriodType = N'日'
+GROUP BY EnergyType, DATEFROMPARTS(YEAR(StatTime), MONTH(StatTime), 1);
+GO
 
--- === 水 (单位 m3) ===
-('水', '日', '2025-11-24', 800.00, 1.1, 0.5, 750.00, '平稳'),
-('水', '日', '2025-11-25', 820.00, 2.5, 2.5, 750.00, '能耗上升'),
-('水', '日', '2025-11-26', 780.00, -2.0, -4.8, 760.00, '能耗下降'),
-('水', '日', '2025-11-27', 850.00, 5.0, 8.9, 780.00, '能耗上升'),
-('水', '日', '2025-11-28', 840.00, 4.0, -1.1, 780.00, '能耗下降'),
-('水', '日', '2025-11-29', 300.00, -20.0, -64.2, 350.00, '能耗下降'),
-('水', '日', '2025-11-30', 290.00, -21.0, -3.3, 350.00, '能耗下降'),
+-- =============================================
+-- 4) 批量重算 YoY/MoM/TrendFlag（日/周/月全部）
+-- =============================================
+EXEC dbo.usp_RecalcHistoryTrendRates '2024-01-01', '2025-12-31', NULL, N'日';
+EXEC dbo.usp_RecalcHistoryTrendRates '2024-01-01', '2025-12-31', NULL, N'周';
+EXEC dbo.usp_RecalcHistoryTrendRates '2024-01-01', '2025-12-31', NULL, N'月';
+GO
 
--- === 光伏 (单位 KWh) - TrendFlag 复用为 发电趋势 ===
-('光伏', '日', '2025-11-24', 5000.00, 10.5, 2.0, 4500.00, '能耗上升'),
-('光伏', '日', '2025-11-25', 5200.00, 12.0, 4.0, 4500.00, '能耗上升'),
-('光伏', '日', '2025-11-26', 2000.00, -50.0, -61.5, 4000.00, '能耗下降'), -- 阴雨天
-('光伏', '日', '2025-11-27', 4800.00, 8.0, 140.0, 4500.00, '能耗上升'), -- 转晴
-('光伏', '日', '2025-11-28', 5100.00, 11.0, 6.2, 4600.00, '能耗上升'),
-('光伏', '日', '2025-11-29', 5300.00, 13.0, 3.9, 4600.00, '能耗上升'),
-('光伏', '日', '2025-11-30', 5400.00, 14.0, 1.9, 4600.00, '能耗上升');
+-- =============================================
+-- 5) RealtimeSummary 大量数据：30天分钟级（43200行）
+--    时间范围：2025-12-01 00:00 ~ 2025-12-30 23:59
+-- =============================================
+DECLARE @RTStart DATETIME2(0) = '2025-12-01 00:00:00';
+DECLARE @RTEnd   DATETIME2(0) = '2025-12-30 23:59:00';
+
+;WITH N AS (
+    SELECT 0 AS n
+    UNION ALL
+    SELECT n + 1 FROM N
+    WHERE DATEADD(MINUTE, n + 1, @RTStart) <= @RTEnd
+),
+T AS (
+    SELECT DATEADD(MINUTE, n, @RTStart) AS StatTime
+    FROM N
+),
+R AS (
+    SELECT
+        StatTime,
+
+        -- 造数：随时间递增 + 小幅波动
+        CONVERT(DECIMAL(18,3), 20000 + DATEDIFF(MINUTE, @RTStart, StatTime) * 0.35 + (ABS(CHECKSUM(NEWID())) % 50) * 0.1) AS TotalElectricityKWh,
+        CONVERT(DECIMAL(18,3),   600 + DATEDIFF(MINUTE, @RTStart, StatTime) * 0.01 + (ABS(CHECKSUM(NEWID())) % 10) * 0.1) AS TotalWaterM3,
+        CONVERT(DECIMAL(18,3),   150 + DATEDIFF(MINUTE, @RTStart, StatTime) * 0.002 + (ABS(CHECKSUM(NEWID())) % 10) * 0.01) AS TotalSteamT,
+        CONVERT(DECIMAL(18,3),  2600 + DATEDIFF(MINUTE, @RTStart, StatTime) * 0.04 + (ABS(CHECKSUM(NEWID())) % 20) * 0.1) AS TotalGasM3,
+
+        -- 光伏：白天有、夜间低（简化：按小时段）
+        CONVERT(DECIMAL(18,3),
+            CASE WHEN DATEPART(HOUR, StatTime) BETWEEN 8 AND 16
+                 THEN 1000 + (ABS(CHECKSUM(NEWID())) % 200) + DATEPART(HOUR, StatTime) * 30
+                 ELSE 50 + (ABS(CHECKSUM(NEWID())) % 20)
+            END
+        ) AS TotalPvGenerationKWh,
+
+        CONVERT(DECIMAL(18,3),
+            CASE WHEN DATEPART(HOUR, StatTime) BETWEEN 8 AND 16
+                 THEN 900 + (ABS(CHECKSUM(NEWID())) % 180) + DATEPART(HOUR, StatTime) * 25
+                 ELSE 40 + (ABS(CHECKSUM(NEWID())) % 15)
+            END
+        ) AS PvSelfUseKWh,
+
+        -- 告警：大多数时间 0~2，少量时间爆发
+        CASE WHEN (ABS(CHECKSUM(NEWID())) % 1000) < 5 THEN 3 ELSE (ABS(CHECKSUM(NEWID())) % 2) END AS HighAlarmCount,
+        CASE WHEN (ABS(CHECKSUM(NEWID())) % 1000) < 8 THEN 5 ELSE (ABS(CHECKSUM(NEWID())) % 3) END AS MediumAlarmCount,
+        CASE WHEN (ABS(CHECKSUM(NEWID())) % 1000) < 10 THEN 8 ELSE (ABS(CHECKSUM(NEWID())) % 4) END AS LowAlarmCount
+    FROM T
+)
+INSERT INTO dbo.RealtimeSummary
+(
+    StatTime,
+    TotalElectricityKWh, TotalWaterM3, TotalSteamT, TotalGasM3,
+    TotalPvGenerationKWh, PvSelfUseKWh,
+    TotalAlarmCount, HighAlarmCount, MediumAlarmCount, LowAlarmCount
+)
+SELECT
+    StatTime,
+    TotalElectricityKWh, TotalWaterM3, TotalSteamT, TotalGasM3,
+    TotalPvGenerationKWh, PvSelfUseKWh,
+    (HighAlarmCount + MediumAlarmCount + LowAlarmCount) AS TotalAlarmCount,
+    HighAlarmCount, MediumAlarmCount, LowAlarmCount
+FROM R
+OPTION (MAXRECURSION 0);
 GO
