@@ -74,7 +74,7 @@
             <div v-if="role === 'Admin'" class="tip-box system-tip">
               <h4>🛠️ 最高权限指令</h4>
               <p>数据库还没备份，账号还没审核，<br>你竟然在这看小牛马？</p>
-              <el-button type="danger" @click="$router.push('/system-admin')">
+              <el-button type="danger" @click="$router.push('/system/users')">
                 进入管理后台 (去坐牢)
               </el-button>
             </div>
