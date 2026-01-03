@@ -117,3 +117,9 @@ class WorkOrderReviewRequest(BaseModel):
 class RemindRequest(BaseModel):
     work_order_id: int
     message: str = "工单处理超时，请尽快响应！"
+
+# 企业管理层 - 审批项目
+class ProjectApproveRequest(BaseModel):
+    project_id: int
+    decision: str # "Approved", "Rejected"
+    comments: str

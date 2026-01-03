@@ -6,6 +6,10 @@
 
         <el-menu-item index="/dashboard">首页</el-menu-item>
 
+        <el-menu-item v-if="role === 'Manager' || role === 'manager'" index="/manager/overview">
+          管理层驾驶舱
+        </el-menu-item>
+
         <template v-if="role === 'Admin'">
           <el-menu-item index="/system/users">用户账号维护</el-menu-item>
           <el-menu-item index="/system/config">参数策略配置</el-menu-item>
@@ -38,8 +42,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const role = ref(localStorage.getItem('role') || '')
 const router = useRouter()
+
+// 兼容读取：防止登录页存的是 role_code 而这里读的是 role
+const role = ref(localStorage.getItem('role') || localStorage.getItem('role_code') || '')
 
 const logout = () => {
   localStorage.clear()
