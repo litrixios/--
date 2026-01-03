@@ -6,8 +6,16 @@
 
         <el-menu-item index="/dashboard">首页</el-menu-item>
 
+        <el-menu-item v-if="role === 'EnergyAdmin'" index="/energy-manager">
+          能源管理中心
+        </el-menu-item>
+
         <el-menu-item v-if="role === 'WorkOrderAdmin'" index="/dispatch-center">
           调度中心 (审核/派单)
+        </el-menu-item>
+
+        <el-menu-item v-if="role === 'Manager'" index="/screen-bg">
+          大屏展示
         </el-menu-item>
 
         <el-menu-item v-if="role === 'Maintainer'" index="/my-tasks">

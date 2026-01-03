@@ -91,12 +91,15 @@
 
           <el-table :data="assetList" style="width: 100%" v-loading="loadingAssets" border>
             <el-table-column prop="AssetName" label="设备名称" width="180" />
-            <el-table-column prop="Model" label="型号" width="150" />
+            <el-table-column prop="EquipmentType" label="设备类型" width="100" />
+            <el-table-column prop="RelatedDeviceCode" label="设备编号" width="150" />
+            <el-table-column prop="ModelSpec" label="型号规格" width="130" />
             <el-table-column prop="InstallTime" label="安装日期" width="150">
               <template #default="scope">
                 {{ formatDate(scope.row.InstallTime) }}
               </template>
             </el-table-column>
+            <el-table-column prop="ScrapStatus" label="报废状态" width="150" />
             <el-table-column prop="WarrantyYears" label="质保(年)" width="100" align="center" />
 
             <el-table-column prop="MaintenanceTips" label="维保建议">

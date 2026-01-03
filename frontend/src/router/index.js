@@ -11,11 +11,25 @@ const routes = [
     children: [
       { path: 'dashboard', component: () => import('../views/Dashboard.vue'), meta: { title: '首页' } },
 
+      // 能源管理员专属页面
+      {
+        path: 'energy-manager',
+        component: () => import('../views/energy-manager/EnergyManager.vue'),
+        meta: { title: '能源控制中心', role: 'EnergyAdmin' }
+      },
+
       // 运维工单管理员专属页面
       {
         path: 'dispatch-center',
         component: () => import('../views/wo-admin/DispatchCenter.vue'),
         meta: { title: '调度中心', role: 'WorkOrderAdmin' }
+      },
+
+      // 企业管理层专属页面
+      {
+        path: 'screen-bg',
+        component: () => import('../views/bigscreen/BigScreen.vue'),
+        meta: { title: '大屏展示', role: 'Manager' }
       },
 
       // 运维人员专属页面

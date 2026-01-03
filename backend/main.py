@@ -8,6 +8,7 @@ from backend.routers import operator
 from backend.routers import admin
 from backend.routers import work_order_admin
 from backend.routers import auth  # 👈 新增这一行
+from backend.routers import big_screen
 
 app = FastAPI(title="智慧能源管理系统 API")
 
@@ -26,6 +27,7 @@ app.include_router(operator.router)
 app.include_router(admin.router)
 app.include_router(work_order_admin.router)
 app.include_router(auth.router) # 👈 注册登录路由
+app.include_router(big_screen.router)
 
 @app.get("/")
 def root():
