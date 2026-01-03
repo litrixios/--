@@ -1,8 +1,13 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from backend.database import get_conn
 from backend.models import WorkOrderCreateRequest, AlarmDismissRequest, WorkOrderReviewRequest, RemindRequest
+from backend.deps import require_role
 
-router = APIRouter(prefix="/api/wo-admin", tags=["运维工单管理员"])
+router = APIRouter(
+    prefix="/api/work-order",
+    tags=["工单管理"],
+    dependencies=[Depends(require_role(["WorkOrderAdmin", "Admin"]))]
+)
 
 
 # ==========================================
@@ -180,6 +185,13 @@ def audit_work_order(req: WorkOrderReviewRequest):
                 WHERE WorkOrderId = %d
             """
             cursor.execute(sql, (req.work_order_id,))
+            # 关键：同步将告警设为已结案
+            sql_alarm = """
+                        UPDATE Alarm
+                        SET ProcessStatus = N'已结案'
+                        WHERE AlarmId = (SELECT AlarmId FROM WorkOrder WHERE WorkOrderId = %d) \
+                        """
+            cursor.execute(sql_alarm, (req.work_order_id,))
             msg = "审核通过，工单流程结束"
 
         else:

@@ -4,18 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10760c35-d72b-4010-89c1-e8a79b1b79fd" name="更改" comment="1.0">
-      <change afterPath="$PROJECT_DIR$/img/image-1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/image-2.png" afterDir="false" />
+    <list default="true" id="10760c35-d72b-4010-89c1-e8a79b1b79fd" name="更改" comment="管理员前端">
+      <change afterPath="$PROJECT_DIR$/backend/deps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/analyst.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/analyst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/management.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/operator.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/operator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/work_order_admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/work_order_admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/request.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -30,17 +47,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/AA_new project/SmartEnergy-DB/img"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Batch.setup_db.executor&quot;: &quot;Run&quot;,
+    &quot;Python.admin.executor&quot;: &quot;Run&quot;,
+    &quot;Python.convert_encoding.executor&quot;: &quot;Run&quot;,
+    &quot;Python.database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.db_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/AA_new project/SmartEnergy-DB/frontend/src/views/operator&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;E:\\WebStorm 2024.2.0.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\AA_new project\SmartEnergy-DB\img" />
+      <recent name="D:\AA_new project\SmartEnergy-DB\frontend\src\views\operator" />
+      <recent name="D:\AA_new project\SmartEnergy-DB\frontend\fake" />
+      <recent name="D:\AA_new project\SmartEnergy-DB\frontend\src\assets" />
+      <recent name="D:\AA_new project\SmartEnergy-DB\frontend\src\assests" />
+      <recent name="D:\AA_new project\SmartEnergy-DB\frontend" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -58,6 +98,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764306421953</updated>
+      <workItem from="1765779555823" duration="2285000" />
+      <workItem from="1765792378307" duration="4479000" />
     </task>
     <task id="LOCAL-00001" summary="1.0">
       <option name="closed" value="true" />
@@ -67,8 +109,195 @@
       <option name="project" value="LOCAL" />
       <updated>1764307027176</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="1.0">
+      <option name="closed" value="true" />
+      <created>1764323862841</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1764323862841</updated>
+    </task>
+    <task id="LOCAL-00003" summary="修改了大屏部分的数据，添加了大屏sql语句的批注">
+      <option name="closed" value="true" />
+      <created>1764570694533</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1764570694533</updated>
+    </task>
+    <task id="LOCAL-00004" summary="加入了用户分类的批注">
+      <option name="closed" value="true" />
+      <created>1764655784991</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1764655784991</updated>
+    </task>
+    <task id="LOCAL-00005" summary="为能源管理员添加了一个视图，插入了部分用于测试能源管理员的脏数据">
+      <option name="closed" value="true" />
+      <created>1764655895709</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1764655895709</updated>
+    </task>
+    <task id="LOCAL-00006" summary="后端基础部分">
+      <option name="closed" value="true" />
+      <created>1764656040385</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1764656040385</updated>
+    </task>
+    <task id="LOCAL-00007" summary="能源管理员">
+      <option name="closed" value="true" />
+      <created>1764656049936</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1764656049936</updated>
+    </task>
+    <task id="LOCAL-00008" summary="修改了视图，适配能源管理员">
+      <option name="closed" value="true" />
+      <created>1764656105776</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1764656105776</updated>
+    </task>
+    <task id="LOCAL-00009" summary="现在可以在这里测试能否连接上数据库">
+      <option name="closed" value="true" />
+      <created>1764657508197</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764657508197</updated>
+    </task>
+    <task id="LOCAL-00010" summary="新增后端readme文档">
+      <option name="closed" value="true" />
+      <created>1764657530135</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1764657530135</updated>
+    </task>
+    <task id="LOCAL-00011" summary="新增后端readme文档">
+      <option name="closed" value="true" />
+      <created>1764657734097</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1764657734097</updated>
+    </task>
+    <task id="LOCAL-00012" summary="重命名">
+      <option name="closed" value="true" />
+      <created>1765766999472</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1765766999472</updated>
+    </task>
+    <task id="LOCAL-00013" summary="做了系统管理员的针对适配，具体的，将触发器改为动态读取，插入了部分测试用数据">
+      <option name="closed" value="true" />
+      <created>1765767076158</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1765767076158</updated>
+    </task>
+    <task id="LOCAL-00014" summary="做了系统管理员的适配">
+      <option name="closed" value="true" />
+      <created>1765767099145</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1765767099145</updated>
+    </task>
+    <task id="LOCAL-00015" summary="插入部分需要的数据">
+      <option name="closed" value="true" />
+      <created>1765767112390</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1765767112390</updated>
+    </task>
+    <task id="LOCAL-00016" summary="重新命名">
+      <option name="closed" value="true" />
+      <created>1765767137237</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1765767137237</updated>
+    </task>
+    <task id="LOCAL-00017" summary="新增operator，admin，work_order_admin三个角色">
+      <option name="closed" value="true" />
+      <created>1765767177846</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1765767177846</updated>
+    </task>
+    <task id="LOCAL-00018" summary="前端">
+      <option name="closed" value="true" />
+      <created>1765782180406</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1765782180406</updated>
+    </task>
+    <task id="LOCAL-00019" summary="readme">
+      <option name="closed" value="true" />
+      <created>1765782308161</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1765782308161</updated>
+    </task>
+    <task id="LOCAL-00020" summary="new">
+      <option name="closed" value="true" />
+      <created>1765783874866</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1765783874866</updated>
+    </task>
+    <task id="LOCAL-00021" summary="对齐了新的table">
+      <option name="closed" value="true" />
+      <created>1765797164814</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1765797164814</updated>
+    </task>
+    <task id="LOCAL-00022" summary="前端">
+      <option name="closed" value="true" />
+      <created>1765797190175</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1765797190175</updated>
+    </task>
+    <task id="LOCAL-00023" summary="管理员前端后端初步">
+      <option name="closed" value="true" />
+      <created>1767410969022</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1767410969022</updated>
+    </task>
+    <task id="LOCAL-00024" summary="管理员前端">
+      <option name="closed" value="true" />
+      <created>1767411631471</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1767411631471</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -81,7 +310,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="dev" />
                       </list>
                     </value>
                   </entry>
@@ -95,6 +324,26 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="1.0" />
+    <MESSAGE value="修改了大屏部分的数据，添加了大屏sql语句的批注" />
+    <MESSAGE value="加入了用户分类的批注" />
+    <MESSAGE value="为能源管理员添加了一个视图，插入了部分用于测试能源管理员的脏数据" />
+    <MESSAGE value="后端基础部分" />
+    <MESSAGE value="能源管理员" />
+    <MESSAGE value="修改了视图，适配能源管理员" />
+    <MESSAGE value="现在可以在这里测试能否连接上数据库" />
+    <MESSAGE value="新增后端readme文档" />
+    <MESSAGE value="重命名" />
+    <MESSAGE value="做了系统管理员的针对适配，具体的，将触发器改为动态读取，插入了部分测试用数据" />
+    <MESSAGE value="做了系统管理员的适配" />
+    <MESSAGE value="插入部分需要的数据" />
+    <MESSAGE value="重新命名" />
+    <MESSAGE value="新增operator，admin，work_order_admin三个角色" />
+    <MESSAGE value="readme" />
+    <MESSAGE value="new" />
+    <MESSAGE value="对齐了新的table" />
+    <MESSAGE value="前端" />
+    <MESSAGE value="管理员前端后端初步" />
+    <MESSAGE value="管理员前端" />
+    <option name="LAST_COMMIT_MESSAGE" value="管理员前端" />
   </component>
 </project>

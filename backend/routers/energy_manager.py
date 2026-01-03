@@ -1,10 +1,16 @@
-from fastapi import APIRouter, HTTPException
+# backend/routers/manager.py
+from fastapi import APIRouter, HTTPException, Depends
 from backend.database import get_conn
+from backend.deps import require_role
 from backend.models import AuditRequest
 from datetime import datetime, timedelta  # 新增导入
 import decimal
 
-router = APIRouter(prefix="/api/energy_manager", tags=["能源管理员"])
+router = APIRouter(
+    prefix="/api/energy",
+    tags=["能源管理"],
+    dependencies=[Depends(require_role(["EnergyManager", "Admin"]))]
+)
 
 @router.get("/report")
 def get_energy_report(area_name: str = None,energy_type: str = None):

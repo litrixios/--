@@ -1,6 +1,6 @@
 # backend/models.py
 from pydantic import BaseModel
-
+from typing import List
 # ==========================================
 # 登录认证模型
 # ==========================================
@@ -48,8 +48,9 @@ class UserAddRequest(BaseModel):
 # 2. 修改用户信息 (改手机号、角色)
 class UserUpdateRequest(BaseModel):
     user_id: int
-    phone: str = None
-    role_code: str = None
+    real_name: str
+    phone: str
+    role_code: str
 
 # 3. 锁定/解锁用户
 class UserLockRequest(BaseModel):
@@ -61,6 +62,10 @@ class UserResetPwdRequest(BaseModel):
     user_id: int
     new_password: str
 
+class PermissionAssignment(BaseModel):
+    user_id: int
+    object_type: str
+    object_ids: List[int]
 # ==========================================
 # 系统管理员 - 规则配置模型
 # ==========================================
@@ -112,3 +117,9 @@ class WorkOrderReviewRequest(BaseModel):
 class RemindRequest(BaseModel):
     work_order_id: int
     message: str = "工单处理超时，请尽快响应！"
+
+# 企业管理层 - 审批项目
+class ProjectApproveRequest(BaseModel):
+    project_id: int
+    decision: str # "Approved", "Rejected"
+    comments: str

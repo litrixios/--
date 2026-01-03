@@ -113,28 +113,6 @@ VALUES
 
 INSERT INTO CircuitMeasurement (SubstationId, CircuitId, CollectTime, VoltageKV, CurrentA, ActivePowerKW, ReactivePowerKVar, PowerFactor, ForwardActiveEnergyKWh, ReverseActiveEnergyKWh, SwitchStatus, CableHeadTemp, CapacitorTemp, DataQualityStatus)
 VALUES
--- 配电房1（SubstationId=1）回路1（CircuitId=1）近30分钟数据
-(1, 1, '2025-11-28 09:00:00', 35.200, 580.500, 18500.000, 3200.000, 0.980, 125000.000, 0.000, N'合闸', 42.50, 38.20, N'完整'),
-(1, 1, '2025-11-28 09:01:00', 35.100, 578.300, 18400.000, 3150.000, 0.981, 125030.670, 0.000, N'合闸', 42.80, 38.50, N'完整'),
-(1, 1, '2025-11-28 09:02:00', 35.300, 582.100, 18600.000, 3250.000, 0.979, 125061.330, 0.000, N'合闸', 43.10, 38.80, N'完整'),
-(1, 1, '2025-11-28 09:03:00', 35.250, 579.800, 18450.000, 3180.000, 0.980, 125092.000, 0.000, N'合闸', 43.30, 39.00, N'完整'),
-(1, 1, '2025-11-28 09:04:00', 35.180, 577.500, 18380.000, 3120.000, 0.981, 125122.670, 0.000, N'合闸', 43.50, 39.20, N'完整'),
-(1, 1, '2025-11-28 09:05:00', 35.320, 583.400, 18650.000, 3280.000, 0.978, 125153.330, 0.000, N'合闸', 43.80, 39.50, N'完整'),
-(1, 1, '2025-11-28 09:06:00', 35.220, 581.200, 18520.000, 3210.000, 0.980, 125184.000, 0.000, N'合闸', 44.00, 39.70, N'完整'),
-(1, 1, '2025-11-28 09:07:00', 35.150, 576.900, 18350.000, 3100.000, 0.982, 125214.670, 0.000, N'合闸', 44.20, 39.90, N'完整'),
-(1, 1, '2025-11-28 09:08:00', 35.280, 582.700, 18580.000, 3230.000, 0.979, 125245.330, 0.000, N'合闸', 44.50, 40.20, N'完整'),
-(1, 1, '2025-11-28 09:09:00', 35.350, 584.100, 18680.000, 3300.000, 0.978, 125276.000, 0.000, N'合闸', 44.80, 40.50, N'完整'),
--- 配电房2（SubstationId=2）回路4（CircuitId=4）近20分钟数据
-(2, 4, '2025-11-28 09:00:00', 0.410, 750.200, 260.000, 45.000, 0.990, 85000.000, 0.000, N'合闸', 38.20, 35.10, N'完整'),
-(2, 4, '2025-11-28 09:01:00', 0.408, 748.500, 258.000, 44.000, 0.991, 85004.300, 0.000, N'合闸', 38.50, 35.30, N'完整'),
-(2, 4, '2025-11-28 09:02:00', 0.412, 752.100, 262.000, 46.000, 0.990, 85008.600, 0.000, N'合闸', 38.80, 35.50, N'完整'),
-(2, 4, '2025-11-28 09:03:00', 0.409, 749.300, 259.000, 44.500, 0.991, 85012.900, 0.000, N'合闸', 39.00, 35.70, N'完整'),
-(2, 4, '2025-11-28 09:04:00', 0.411, 751.400, 261.000, 45.500, 0.990, 85017.200, 0.000, N'合闸', 39.20, 35.90, N'完整'),
-(2, 4, '2025-11-28 09:05:00', 0.413, 753.600, 263.000, 46.500, 0.989, 85021.500, 0.000, N'合闸', 39.50, 36.10, N'完整'),
-(2, 4, '2025-11-28 09:06:00', 0.407, 747.800, 257.000, 43.500, 0.992, 85025.800, 0.000, N'合闸', 39.80, 36.30, N'完整'),
-(2, 4, '2025-11-28 09:07:00', 0.414, 754.200, 264.000, 47.000, 0.989, 85030.100, 0.000, N'合闸', 40.00, 36.50, N'完整'),
-(2, 4, '2025-11-28 09:08:00', 0.406, NULL, 256.000, 43.000, 0.992, 85034.400, 0.000, N'合闸', 40.20, 36.70, N'数据不完整'),
-(2, 4, '2025-11-28 09:09:00', 0.415, 755.800, 265.000, 47.500, 0.988, 85038.700, 0.000, N'合闸', 40.50, 36.90, N'完整'),
 -- 配电房3（SubstationId=3）回路9（CircuitId=9）近10分钟数据
 (3, 9, '2025-11-28 09:00:00', 37.100, 590.200, 19200.000, 3400.000, 0.975, 156000.000, 0.000, N'合闸', 45.20, 41.30, N'完整'),
 (3, 9, '2025-11-28 09:01:00', 37.200, 592.500, 19300.000, 3450.000, 0.974, 156032.170, 0.000, N'合闸', 45.50, 41.60, N'完整'),
@@ -179,26 +157,6 @@ VALUES
 
 INSERT INTO TransformerMeasurement (SubstationId, TransformerId, CollectTime, LoadRate, WindingTemp, CoreTemp, EnvTemp, EnvHumidity, RunStatus)
 VALUES
--- 配电房1变压器1（TransformerId=1）近10分钟数据
-(1, 1, '2025-11-28 09:00:00', 78.50, 95.20, 78.30, 25.50, 55.20, N'正常'),
-(1, 1, '2025-11-28 09:01:00', 78.80, 95.50, 78.60, 25.60, 55.00, N'正常'),
-(1, 1, '2025-11-28 09:02:00', 79.20, 96.10, 79.10, 25.70, 54.80, N'正常'),
-(1, 1, '2025-11-28 09:03:00', 78.70, 95.40, 78.50, 25.80, 54.60, N'正常'),
-(1, 1, '2025-11-28 09:04:00', 79.00, 95.80, 78.90, 25.90, 54.40, N'正常'),
-(1, 1, '2025-11-28 09:05:00', 79.30, 96.30, 79.30, 26.00, 54.20, N'正常'),
-(1, 1, '2025-11-28 09:06:00', 78.90, 95.70, 78.80, 26.10, 54.00, N'正常'),
-(1, 1, '2025-11-28 09:07:00', 79.10, 96.00, 79.00, 26.20, 53.80, N'正常'),
-(1, 1, '2025-11-28 09:08:00', 79.40, 96.50, 79.50, 26.30, 53.60, N'正常'),
-(1, 1, '2025-11-28 09:09:00', 79.60, 96.80, 79.70, 26.40, 53.40, N'正常'),
--- 配电房2异常变压器（TransformerId=5）近8分钟数据
-(2, 5, '2025-11-28 09:00:00', 85.30, 118.50, 92.40, 27.20, 56.50, N'异常'),
-(2, 5, '2025-11-28 09:01:00', 85.70, 119.20, 92.80, 27.30, 56.30, N'异常'),
-(2, 5, '2025-11-28 09:02:00', 86.10, 119.80, 93.20, 27.40, 56.10, N'异常'),
-(2, 5, '2025-11-28 09:03:00', 86.50, 120.50, 93.60, 27.50, 55.90, N'异常'),
-(2, 5, '2025-11-28 09:04:00', 86.80, 121.20, 94.00, 27.60, 55.70, N'异常'),
-(2, 5, '2025-11-28 09:05:00', 87.20, 121.80, 94.40, 27.70, 55.50, N'异常'),
-(2, 5, '2025-11-28 09:06:00', 87.50, 122.50, 94.80, 27.80, 55.30, N'异常'),
-(2, 5, '2025-11-28 09:07:00', 87.80, 123.20, 95.20, 27.90, 55.10, N'异常'),
 -- 配电房3变压器4（TransformerId=12）近7分钟数据
 (3, 12, '2025-11-28 09:00:00', 65.20, 88.30, 72.50, 24.80, 57.20, N'异常'),
 (3, 12, '2025-11-28 09:01:00', 65.50, 88.70, 72.80, 24.90, 57.00, N'异常'),
@@ -240,3 +198,225 @@ VALUES
 INSERT INTO AlarmThresholdConfig (DeviceType, MetricName, ThresholdValue, AlarmLevel)
 SELECT N'变压器', N'绕组温度', 120, N'高'
 WHERE NOT EXISTS(SELECT 1 FROM AlarmThresholdConfig);
+
+
+/* =========================================================
+   补齐 24小时 * 每分钟 数据（仅：回路(1,1)(2,4) + 变压器(1,1)(2,5)）
+   数据库：SQL Server (T-SQL)
+   说明：
+   1) 自动生成 1440 个分钟点
+   2) NOT EXISTS 跳过已存在的 CollectTime，避免重复主键/唯一约束
+   ========================================================= */
+
+DECLARE @StartTime  DATETIME2(0) = '2025-11-28 09:00:00';
+DECLARE @EndTime    DATETIME2(0) = DATEADD(MINUTE, 24*60-1, @StartTime); -- 24小时最后一分钟
+
+;WITH Minutes AS (
+    SELECT @StartTime AS CollectTime
+    UNION ALL
+    SELECT DATEADD(MINUTE, 1, CollectTime)
+    FROM Minutes
+    WHERE CollectTime < @EndTime
+),
+/* 生成噪声（可重复调用），避免每列都写一遍 CHECKSUM(NEWID()) */
+Noise AS (
+    SELECT
+        m.CollectTime,
+        -- 生成 0~1 的伪随机数
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R1,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R2,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R3,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R4
+    FROM Minutes m
+),
+/* =========================
+   回路数据：配电房1回路1 (1,1)
+   ========================= */
+C11_Base AS (
+    SELECT
+        n.CollectTime,
+        CAST(35.20 + (n.R1-0.5)*0.60 AS DECIMAL(10,3)) AS VoltageKV,         -- 约 34.9~35.5
+        CAST(580.50 + (n.R2-0.5)*20.0 AS DECIMAL(10,3)) AS CurrentA,        -- 约 570~590
+        CAST(18500 + (n.R3-0.5)*600 AS DECIMAL(18,3)) AS ActivePowerKW,     -- 约 18200~18800
+        CAST(3200  + (n.R4-0.5)*260 AS DECIMAL(18,3)) AS ReactivePowerKVar, -- 约 3070~3330
+        CAST(0.980 + (n.R1-0.5)*0.010 AS DECIMAL(6,3)) AS PowerFactor,      -- 约 0.975~0.985
+        -- 温度缓慢变化
+        CAST(42.50 + (DATEDIFF(MINUTE, @StartTime, n.CollectTime)/1440.0)*6.0 + (n.R2-0.5)*0.8 AS DECIMAL(6,2)) AS CableHeadTemp,
+        CAST(38.20 + (DATEDIFF(MINUTE, @StartTime, n.CollectTime)/1440.0)*5.0 + (n.R3-0.5)*0.8 AS DECIMAL(6,2)) AS CapacitorTemp,
+        -- 开关状态：默认合闸；每天给一个小概率分闸（示例：每 360 分钟分闸 2 分钟）
+        CASE WHEN (DATEDIFF(MINUTE, @StartTime, n.CollectTime) % 360) IN (120,121) THEN N'分闸' ELSE N'合闸' END AS SwitchStatus,
+        -- 数据质量：大部分完整
+        CASE WHEN (DATEDIFF(MINUTE, @StartTime, n.CollectTime) % 240) = 180 THEN N'数据不完整' ELSE N'完整' END AS DataQualityStatus,
+        -- 为“数据不完整”预留一个字段置空点（示例：电流偶尔 NULL）
+        CASE WHEN (DATEDIFF(MINUTE, @StartTime, n.CollectTime) % 240) = 180 THEN CAST(NULL AS DECIMAL(10,3))
+             ELSE CAST(580.50 + (n.R2-0.5)*20.0 AS DECIMAL(10,3))
+        END AS CurrentA_MaybeNull
+    FROM Noise n
+),
+C11_WithEnergy AS (
+    SELECT
+        CollectTime,
+        VoltageKV,
+        CurrentA_MaybeNull AS CurrentA,
+        ActivePowerKW,
+        ReactivePowerKVar,
+        PowerFactor,
+        -- 以你给的 09:00 能量 125000 为基准：每分钟累加 ActivePowerKW/60
+        CAST(125000.000
+             + SUM(ActivePowerKW/60.0) OVER (ORDER BY CollectTime ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+             AS DECIMAL(18,3)) AS ForwardActiveEnergyKWh,
+        CAST(0.000 AS DECIMAL(18,3)) AS ReverseActiveEnergyKWh,
+        SwitchStatus,
+        CableHeadTemp,
+        CapacitorTemp,
+        DataQualityStatus
+    FROM C11_Base
+),
+/* =========================
+   回路数据：配电房2回路4 (2,4)
+   ========================= */
+C24_Base AS (
+    SELECT
+        n.CollectTime,
+        CAST(0.410 + (n.R1-0.5)*0.020 AS DECIMAL(10,3)) AS VoltageKV,          -- 约 0.400~0.420
+        CAST(750.20 + (n.R2-0.5)*25.0 AS DECIMAL(10,3)) AS CurrentA,           -- 约 738~763
+        CAST(260.00 + (n.R3-0.5)*18.0 AS DECIMAL(18,3)) AS ActivePowerKW,      -- 约 251~269
+        CAST(45.00  + (n.R4-0.5)*8.0  AS DECIMAL(18,3)) AS ReactivePowerKVar,  -- 约 41~49
+        CAST(0.990  + (n.R1-0.5)*0.008 AS DECIMAL(6,3)) AS PowerFactor,        -- 约 0.986~0.994
+        CAST(38.20 + (DATEDIFF(MINUTE, @StartTime, n.CollectTime)/1440.0)*4.0 + (n.R2-0.5)*0.8 AS DECIMAL(6,2)) AS CableHeadTemp,
+        CAST(35.10 + (DATEDIFF(MINUTE, @StartTime, n.CollectTime)/1440.0)*3.5 + (n.R3-0.5)*0.8 AS DECIMAL(6,2)) AS CapacitorTemp,
+        CASE WHEN (DATEDIFF(MINUTE, @StartTime, n.CollectTime) % 480) IN (300,301,302) THEN N'分闸' ELSE N'合闸' END AS SwitchStatus,
+        -- 模拟你示例里出现的“数据不完整”：每 180 分钟一次
+        CASE WHEN (DATEDIFF(MINUTE, @StartTime, n.CollectTime) % 180) = 8 THEN N'数据不完整' ELSE N'完整' END AS DataQualityStatus,
+        CASE WHEN (DATEDIFF(MINUTE, @StartTime, n.CollectTime) % 180) = 8 THEN CAST(NULL AS DECIMAL(10,3))
+             ELSE CAST(750.20 + (n.R2-0.5)*25.0 AS DECIMAL(10,3))
+        END AS CurrentA_MaybeNull
+    FROM Noise n
+),
+C24_WithEnergy AS (
+    SELECT
+        CollectTime,
+        VoltageKV,
+        CurrentA_MaybeNull AS CurrentA,
+        ActivePowerKW,
+        ReactivePowerKVar,
+        PowerFactor,
+        -- 以你给的 09:00 能量 85000 为基准
+        CAST(85000.000
+             + SUM(ActivePowerKW/60.0) OVER (ORDER BY CollectTime ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+             AS DECIMAL(18,3)) AS ForwardActiveEnergyKWh,
+        CAST(0.000 AS DECIMAL(18,3)) AS ReverseActiveEnergyKWh,
+        SwitchStatus,
+        CableHeadTemp,
+        CapacitorTemp,
+        DataQualityStatus
+    FROM C24_Base
+)
+/* =========================
+   1) 插入 CircuitMeasurement（仅 1-1、2-4）
+   ========================= */
+INSERT INTO CircuitMeasurement
+(
+  SubstationId, CircuitId, CollectTime,
+  VoltageKV, CurrentA, ActivePowerKW, ReactivePowerKVar, PowerFactor,
+  ForwardActiveEnergyKWh, ReverseActiveEnergyKWh,
+  SwitchStatus, CableHeadTemp, CapacitorTemp, DataQualityStatus
+)
+SELECT
+  1, 1, c.CollectTime,
+  c.VoltageKV, c.CurrentA, c.ActivePowerKW, c.ReactivePowerKVar, c.PowerFactor,
+  c.ForwardActiveEnergyKWh, c.ReverseActiveEnergyKWh,
+  c.SwitchStatus, c.CableHeadTemp, c.CapacitorTemp, c.DataQualityStatus
+FROM C11_WithEnergy c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM CircuitMeasurement x
+    WHERE x.SubstationId = 1 AND x.CircuitId = 1 AND x.CollectTime = c.CollectTime
+)
+UNION ALL
+SELECT
+  2, 4, c.CollectTime,
+  c.VoltageKV, c.CurrentA, c.ActivePowerKW, c.ReactivePowerKVar, c.PowerFactor,
+  c.ForwardActiveEnergyKWh, c.ReverseActiveEnergyKWh,
+  c.SwitchStatus, c.CableHeadTemp, c.CapacitorTemp, c.DataQualityStatus
+FROM C24_WithEnergy c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM CircuitMeasurement x
+    WHERE x.SubstationId = 2 AND x.CircuitId = 4 AND x.CollectTime = c.CollectTime
+)
+OPTION (MAXRECURSION 0);
+
+GO
+
+/* =========================
+   2) 插入 TransformerMeasurement（仅 1-1、2-5）
+   ========================= */
+
+DECLARE @StartTime2 DATETIME2(0) = '2025-11-28 09:00:00';
+DECLARE @EndTime2   DATETIME2(0) = DATEADD(MINUTE, 24*60-1, @StartTime2);
+
+;WITH Minutes AS (
+    SELECT @StartTime2 AS CollectTime
+    UNION ALL
+    SELECT DATEADD(MINUTE, 1, CollectTime)
+    FROM Minutes
+    WHERE CollectTime < @EndTime2
+),
+Noise AS (
+    SELECT
+        m.CollectTime,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R1,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R2,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R3,
+        ABS(CHECKSUM(NEWID())) / 2147483647.0 AS R4
+    FROM Minutes m
+),
+T11 AS (
+    SELECT
+        CollectTime,
+        CAST(78.50 + (R1-0.5)*4.0  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*1.5 AS DECIMAL(6,2)) AS LoadRate,
+        CAST(95.20 + (R2-0.5)*2.0  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*1.0 AS DECIMAL(6,2)) AS WindingTemp,
+        CAST(78.30 + (R3-0.5)*1.8  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*0.8 AS DECIMAL(6,2)) AS CoreTemp,
+        CAST(25.50 + (R4-0.5)*2.0  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*0.6 AS DECIMAL(6,2)) AS EnvTemp,
+        CAST(55.20 + (R1-0.5)*3.0  - (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*1.0 AS DECIMAL(6,2)) AS EnvHumidity,
+        N'正常' AS RunStatus
+    FROM Noise
+),
+T25 AS (
+    SELECT
+        CollectTime,
+        CAST(85.30 + (R1-0.5)*5.0  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*2.5 AS DECIMAL(6,2)) AS LoadRate,
+        CAST(118.50 + (R2-0.5)*4.0 + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*3.0 AS DECIMAL(6,2)) AS WindingTemp,
+        CAST(92.40 + (R3-0.5)*3.0  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*2.0 AS DECIMAL(6,2)) AS CoreTemp,
+        CAST(27.20 + (R4-0.5)*2.0  + (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*0.8 AS DECIMAL(6,2)) AS EnvTemp,
+        CAST(56.50 + (R1-0.5)*3.0  - (DATEDIFF(MINUTE,@StartTime2,CollectTime)/1440.0)*1.2 AS DECIMAL(6,2)) AS EnvHumidity,
+        N'异常' AS RunStatus
+    FROM Noise
+)
+INSERT INTO TransformerMeasurement
+(
+  SubstationId, TransformerId, CollectTime,
+  LoadRate, WindingTemp, CoreTemp, EnvTemp, EnvHumidity, RunStatus
+)
+SELECT
+  1, 1, t.CollectTime,
+  t.LoadRate, t.WindingTemp, t.CoreTemp, t.EnvTemp, t.EnvHumidity, t.RunStatus
+FROM T11 t
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM TransformerMeasurement x
+    WHERE x.SubstationId = 1 AND x.TransformerId = 1 AND x.CollectTime = t.CollectTime
+)
+UNION ALL
+SELECT
+  2, 5, t.CollectTime,
+  t.LoadRate, t.WindingTemp, t.CoreTemp, t.EnvTemp, t.EnvHumidity, t.RunStatus
+FROM T25 t
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM TransformerMeasurement x
+    WHERE x.SubstationId = 2 AND x.TransformerId = 5 AND x.CollectTime = t.CollectTime
+)
+OPTION (MAXRECURSION 0);
+
