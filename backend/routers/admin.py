@@ -1,15 +1,20 @@
 import pymssql
 import os
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime
 from backend.database import get_conn, DB_SETTINGS
+from backend.deps import require_role
 # 仅导入存在的模型，去掉了导致报错的 PermissionAssignment
 from backend.models import (
     UserAddRequest, UserUpdateRequest, UserLockRequest, UserResetPwdRequest,
     AlarmRuleUpdateRequest, PricePolicyUpdateRequest, BackupRequest, RestoreRequest, PermissionAssignment
 )
 
-router = APIRouter(prefix="/api/admin", tags=["系统管理员"])
+router = APIRouter(
+    prefix="/api/admin",
+    tags=["系统管理员"],
+    dependencies=[Depends(require_role(["Admin"]))]
+)
 
 # ==========================================
 # 1. 用户列表

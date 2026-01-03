@@ -1,7 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from backend.database import get_conn
+from backend.deps import require_role
 
-router = APIRouter(prefix="/api/analyst", tags=["数据分析师"])
+router = APIRouter(
+    prefix="/api/analyst",
+    tags=["数据分析"],
+    dependencies=[Depends(require_role(["Analyst", "Admin"]))]
+)
 
 # 1. 光伏偏差分析：增加按天聚合，解决“图线一致”的视觉问题
 @router.get("/pv/analysis")

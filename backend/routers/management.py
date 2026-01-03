@@ -1,9 +1,15 @@
 # backend/routers/management.py
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from backend.database import get_conn
 from typing import List
 
-router = APIRouter(prefix="/api/management", tags=["企业管理层"])
+from backend.deps import require_role
+
+router = APIRouter(
+    prefix="/api/management",
+    tags=["企业管理"],
+    dependencies=[Depends(require_role(["Manager", "manager", "Admin"]))]
+)
 
 # 映射字典：将前端的英文参数映射为数据库中的中文类型
 ENERGY_TYPE_MAP = {

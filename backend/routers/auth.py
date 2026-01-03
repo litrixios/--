@@ -1,8 +1,12 @@
-import uuid
-import hashlib  # 👈 1. 必须引入这个库
+# backend/routers/auth.py
+import hashlib
+from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException
+from jose import jwt
 from backend.database import get_conn
 from backend.models import LoginRequest, LoginResponse
+# 引入配置
+from backend.deps import SECRET_KEY, ALGORITHM
 
 router = APIRouter(tags=["认证系统"])
 
@@ -12,9 +16,10 @@ def login(req: LoginRequest):
     conn = get_conn()
     cursor = conn.cursor(as_dict=True)
     try:
-        # 1. 查用户
+        # 1. 查用户状态
         sql = """
-            SELECT UserId, RealName, PasswordHash, RoleCode 
+            SELECT UserId, RealName, PasswordHash, RoleCode, 
+                   IsLocked, FailedLoginCount 
             FROM UserAccount 
             WHERE UserName = %s
         """
@@ -24,32 +29,52 @@ def login(req: LoginRequest):
         if not user:
             raise HTTPException(status_code=400, detail="用户不存在")
 
-        # ========================================================
-        # 👇 2. 核心修改：使用 SHA256 算法计算哈希
-        # ========================================================
+        # 【安全功能1：检查锁定状态】
+        if user['IsLocked']:
+            raise HTTPException(status_code=403, detail="账号已被锁定，请联系管理员")
 
-        # 数据库用的是 HASHBYTES('SHA2_256', '密码') -> 返回二进制
-        # Python 也要做同样的操作：
-        # .encode('utf-8') 把字符串转成字节
-        # hashlib.sha256(...) 进行哈希计算
-        # .digest() 获取最终的二进制结果 (不要用 hexdigest，那是字符串)
+        # 2. 密码比对
         input_pwd_hash = hashlib.sha256(req.password.encode('utf-8')).digest()
-
         db_pwd_hash = user['PasswordHash']
 
-        # 3. 比对二进制哈希值
         if input_pwd_hash != db_pwd_hash:
-            print(f"比对失败！")
-            print(f"前端输入加密后: {input_pwd_hash.hex()}")  # 打印成16进制方便看
-            print(f"数据库存储的值: {db_pwd_hash.hex()}")
-            raise HTTPException(status_code=400, detail="密码错误")
+            # 【安全功能1：登录失败计数】
+            new_count = (user['FailedLoginCount'] or 0) + 1
+            is_locked = 1 if new_count >= 5 else 0
 
-        # ========================================================
+            # 更新数据库
+            update_sql = """
+                UPDATE UserAccount 
+                SET FailedLoginCount = %s, IsLocked = %s, LastFailedTime = GETDATE()
+                WHERE UserId = %s
+            """
+            cursor.execute(update_sql, (new_count, is_locked, user['UserId']))
+            conn.commit()
 
-        # 4. 登录成功
-        fake_token = str(uuid.uuid4())
+            msg = "密码错误"
+            if is_locked:
+                msg += "，错误次数过多，账号已锁定"
+            else:
+                msg += f"，再错 {5 - new_count} 次将被锁定"
+
+            raise HTTPException(status_code=400, detail=msg)
+
+        # 3. 登录成功：重置计数
+        cursor.execute("UPDATE UserAccount SET FailedLoginCount = 0 WHERE UserId = %s", (user['UserId'],))
+        conn.commit()
+
+        # 【安全功能2：生成带30分钟过期的 JWT Token】
+        expire = datetime.utcnow() + timedelta(minutes=30)
+        token_data = {
+            "sub": user['UserName'],
+            "user_id": user['UserId'],
+            "role_code": user['RoleCode'],
+            "exp": expire
+        }
+        token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
+
         return LoginResponse(
-            token=fake_token,
+            token=token,
             user_id=user['UserId'],
             real_name=user['RealName'],
             role_code=user['RoleCode']
