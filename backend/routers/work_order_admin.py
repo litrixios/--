@@ -1,8 +1,13 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from backend.database import get_conn
 from backend.models import WorkOrderCreateRequest, AlarmDismissRequest, WorkOrderReviewRequest, RemindRequest
+from backend.deps import require_role
 
-router = APIRouter(prefix="/api/wo-admin", tags=["运维工单管理员"])
+router = APIRouter(
+    prefix="/api/work-order",
+    tags=["工单管理"],
+    dependencies=[Depends(require_role(["WorkOrderAdmin", "Admin"]))]
+)
 
 
 # ==========================================

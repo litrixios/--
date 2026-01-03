@@ -4,18 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10760c35-d72b-4010-89c1-e8a79b1b79fd" name="更改" comment="前端">
-      <change afterPath="$PROJECT_DIR$/backend/routers/management.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/views/manager/ManagerOverview.vue" afterDir="false" />
+    <list default="true" id="10760c35-d72b-4010-89c1-e8a79b1b79fd" name="更改" comment="管理员前端">
+      <change afterPath="$PROJECT_DIR$/backend/deps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/Layout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/Layout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup_db.bat" beforeDir="false" afterPath="$PROJECT_DIR$/setup_db.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/analyst.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/analyst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/management.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/operator.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/operator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/work_order_admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/work_order_admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/request.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,7 +277,23 @@
       <option name="project" value="LOCAL" />
       <updated>1765797190175</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="管理员前端后端初步">
+      <option name="closed" value="true" />
+      <created>1767410969022</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1767410969022</updated>
+    </task>
+    <task id="LOCAL-00024" summary="管理员前端">
+      <option name="closed" value="true" />
+      <created>1767411631471</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1767411631471</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,7 +310,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/main" />
+                        <option value="dev" />
                       </list>
                     </value>
                   </entry>
@@ -329,6 +342,8 @@
     <MESSAGE value="new" />
     <MESSAGE value="对齐了新的table" />
     <MESSAGE value="前端" />
-    <option name="LAST_COMMIT_MESSAGE" value="前端" />
+    <MESSAGE value="管理员前端后端初步" />
+    <MESSAGE value="管理员前端" />
+    <option name="LAST_COMMIT_MESSAGE" value="管理员前端" />
   </component>
 </project>

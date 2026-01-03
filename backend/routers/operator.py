@@ -1,10 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from backend.database import get_conn
+from backend.deps import require_role
 
 from backend.models import WorkOrderCreateRequest, WorkOrderFinishRequest
 from datetime import datetime
 
-router = APIRouter(prefix="/api/operator", tags=["运维人员"])
+router = APIRouter(
+    prefix="/api/operator",
+    tags=["运维人员"],
+    dependencies=[Depends(require_role(["Maintainer", "Admin"]))]
+)
 
 
 # ==========================================
