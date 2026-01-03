@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Layout from '../layout/Layout.vue'
+import ManagerOverview from '../views/manager/ManagerOverview.vue'
 
 const routes = [
   { path: '/login', component: Login },
@@ -51,6 +52,17 @@ const routes = [
         path: 'analysis/report',
         component: () => import('../views/analyst/AnalystView.vue'), // 确保路径正确
         meta: { title: '数据深度分析', role: 'Analyst' } // 角色名需匹配数据库
+      },
+
+      {
+        path: 'manager/overview',
+        name: 'ManagerOverview',
+        component: ManagerOverview,
+        meta: {
+            title: '管理层驾驶舱',
+            icon: 'Monitor',  // 如果你有用图标组件
+            roles: ['manager'] // 权限控制
+        }
       }
     ]
   }
