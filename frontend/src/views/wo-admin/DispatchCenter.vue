@@ -104,7 +104,20 @@ const request = axios.create({
   baseURL: 'http://127.0.0.1:8000',
   timeout: 5000
 })
+request.interceptors.request.use(config => {
+  // 从本地存储（localStorage）获取 Token
+  // 注意：请确认你登录成功后保存 Token 的键名是 'token' 还是 'auth_token'
+  const token = localStorage.getItem('token');
 
+  if (token) {
+    // 这里的格式必须符合后端要求，通常是 "Bearer <token>"
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return config;
+}, error => {
+  return Promise.reject(error);
+})
 // --- 方法：数据加载 ---
 const loadData = async () => {
   loading.value = true

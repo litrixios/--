@@ -107,7 +107,7 @@
         </el-table-column>
         <el-table-column prop="AvgWastePower" label="凌晨平均功率">
           <template #default="scope">
-            <span style="font-weight: bold; color: #f56c6c;">{{ scope.row.AvgWastePower.toFixed(2) }} kW</span>
+            <span style="font-weight: bold; color: #f56c6c;">{{ scope.row.AvgWastePower != null ? scope.row.AvgWastePower.toFixed(2) : '0.00' }} kW</span>
           </template>
         </el-table-column>
         <el-table-column label="优化建议">
@@ -125,7 +125,7 @@
 import { onMounted, ref, onUnmounted } from 'vue';
 import * as echarts from 'echarts';
 import { QuestionFilled } from '@element-plus/icons-vue';
-import axios from 'axios';
+import axios from '../../utils/request';
 import * as XLSX from 'xlsx';
 
 // 响应式数据
@@ -142,7 +142,8 @@ const fetchQuarterlyReport = async () => {
     const res = await axios.get('/api/analyst/reports/quarterly-summary', {
       params: { year: 2025, quarter: 4 }
     });
-    reportData.value = res.data;
+    // ✅ res 直接就是后端返回的对象 { summary: {...}, wasteDetails: [...] }
+    reportData.value = res;
   } catch (e) {
     console.error("报表获取失败:", e);
   }
@@ -159,7 +160,7 @@ const initPvChart = async () => {
     if (!chartDom) return;
     if (!pvChartInstance) pvChartInstance = echarts.init(chartDom);
 
-    const chartData = res.data || [];
+    const chartData = res || [];
 
     const option = {
       tooltip: {
@@ -216,6 +217,7 @@ const initPvChart = async () => {
 const initWasteChart = async () => {
   try {
     const res = await axios.get('/api/analyst/energy/waste-identify');
+    reportData.value.wasteDetails = res;
     const chartDom = document.getElementById('wasteChart');
     if (!chartDom) return;
     if (!wasteChartInstance) wasteChartInstance = echarts.init(chartDom);
@@ -225,13 +227,13 @@ const initWasteChart = async () => {
       xAxis: { type: 'value', name: 'kW', splitLine: { show: false } },
       yAxis: {
         type: 'category',
-        data: res.data.map(d => d.CircuitName),
+        data: res.map(d => d.Name),
         axisLabel: { fontSize: 11 }
       },
       series: [{
         name: '待机功率',
         type: 'bar',
-        data: res.data.map(d => d.MidnightAvgPower),
+        data: res.map(d => d.AvgWastePower),
         label: { show: true, position: 'right', formatter: '{c}kW' },
         itemStyle: {
           color: (p) => p.value > 10 ? '#f56c6c' : '#409EFF',
@@ -259,7 +261,7 @@ const exportReport = () => {
   const excelData = details.map(item => ({
     '回路名称': item.Name,
     '诊断状态': '凌晨高耗待机',
-    '平均待机功率 (kW)': item.AvgWastePower.toFixed(2),
+    '平均待机功率 (kW)': item.AvgWastePower != null ? item.AvgWastePower.toFixed(2) : '0.00',
     '判定时间段': '02:00 - 04:00',
     '改进建议': item.AvgWastePower > 10 ? '强制断电/安装定时器' : '检查设备待机配置'
   }));
