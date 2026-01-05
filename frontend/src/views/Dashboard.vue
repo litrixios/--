@@ -11,23 +11,15 @@
         <el-card class="meme-card" shadow="hover">
           <div class="meme-content">
             <div class="typing-effect">
-              💪 小牛马，今天也要认真上班哦！
+                智慧能源系统
             </div>
 
             <div class="image-wrapper">
-              <img src="../assets/cow.jpg" alt="working hard" class="cow-img" />
-              <div class="image-caption">👆 图：现在的你 (监控画面实时回传)</div>
+              <img src="../assets/img.png" alt="working hard" class="cow-img" />
+              <div class="image-caption">👆 能源管理</div>
             </div>
 
             <div class="fake-stats">
-              <div class="stat-item">
-                <span>距离退休进度：</span>
-                <el-progress :percentage="0.01" status="exception" :format="() => '0.01% (遥遥无期)'" />
-              </div>
-              <div class="stat-item">
-                <span>今日精神状态：</span>
-                <el-progress :percentage="5" color="#f56c6c" :format="() => '5% (快崩溃了)'" />
-              </div>
             </div>
           </div>
         </el-card>
@@ -59,7 +51,7 @@
               <h4>🚨 调度指令</h4>
               <p>有一堆告警等着你去派单呢！别偷懒！</p>
               <el-button type="primary" @click="$router.push('/dispatch-center')">
-                前往调度中心 (去受苦)
+                前往调度中心
               </el-button>
             </div>
 
@@ -67,7 +59,7 @@
               <h4>🔧 维修指令</h4>
               <p>设备又坏了，背上工具包出发吧！</p>
               <el-button type="warning" @click="$router.push('/my-tasks')">
-                查看维修任务 (去跑腿)
+                查看维修任务
               </el-button>
             </div>
 
@@ -75,7 +67,7 @@
               <h4>🛠️ 最高权限指令</h4>
               <p>数据库还没备份，账号还没审核，<br>你竟然在这看小牛马？</p>
               <el-button type="danger" @click="$router.push('/system/users')">
-                进入管理后台 (去坐牢)
+                进入管理后台
               </el-button>
             </div>
 
@@ -83,12 +75,12 @@
               <h4>📊 数据预言指令</h4>
               <p>光伏电量对不上，能耗曲线在梦游，<br>全厂的节能KPI都压在你肩上了！</p>
               <el-button type="success" @click="$router.push('/analysis/report')">
-                开始深度分析 (去头秃)
+                开始深度分析
               </el-button>
             </div>
 
             <div v-if="!['运维工单管理员', 'WorkOrderAdmin', '运维人员', 'Maintainer'].includes(role) && !role.includes('运维')" class="tip-box">
-              <p>你好像没有分配具体的搬砖任务，<br>建议摸鱼。</p>
+
             </div>
 
           </div>
@@ -98,8 +90,8 @@
           <h3>☕ 摸鱼小贴士</h3>
           <p style="font-size: 12px; color: #666; line-height: 1.6;">
             1. 多喝热水。<br>
-            2. 带薪拉屎是合法的。<br>
-            3. 老板不走我不走 (假的)。
+            2. 注意身体。<br>
+            3. 老板不走我不走 。
           </p>
         </el-card>
       </el-col>

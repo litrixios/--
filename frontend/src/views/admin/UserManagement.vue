@@ -57,7 +57,7 @@
         <el-form-item label="角色">
           <el-select v-model="userForm.role_code" style="width: 100%">
             <el-option label="系统管理员" value="Admin" />
-            <el-option label="运维人员" value="Operator" />
+            <el-option label="运维人员" value="Maintainer" />
             <el-option label="工单管理员" value="WorkOrderAdmin" />
           </el-select>
         </el-form-item>

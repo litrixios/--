@@ -112,7 +112,7 @@
         </el-table-column>
         <el-table-column label="优化建议">
           <template #default="scope">
-            <span v-if="scope.row.AvgWastePower > 10">建议安装智能控制模块，执行下班强制断电</span>
+            <span v-if="scope.row.AvgWastePower > 300">建议安装智能控制模块，执行下班强制断电</span>
             <span v-else>建议检查末端设备待机设置及插座负载</span>
           </template>
         </el-table-column>
@@ -236,7 +236,7 @@ const initWasteChart = async () => {
         data: res.map(d => d.AvgWastePower),
         label: { show: true, position: 'right', formatter: '{c}kW' },
         itemStyle: {
-          color: (p) => p.value > 10 ? '#f56c6c' : '#409EFF',
+          color: (p) => p.value > 300 ? '#f56c6c' : '#409EFF',
           borderRadius: [0, 4, 4, 0]
         }
       }]
@@ -263,7 +263,7 @@ const exportReport = () => {
     '诊断状态': '凌晨高耗待机',
     '平均待机功率 (kW)': item.AvgWastePower != null ? item.AvgWastePower.toFixed(2) : '0.00',
     '判定时间段': '02:00 - 04:00',
-    '改进建议': item.AvgWastePower > 10 ? '强制断电/安装定时器' : '检查设备待机配置'
+    '改进建议': item.AvgWastePower > 300 ? '强制断电/安装定时器' : '检查设备待机配置'
   }));
 
   // 3. 创建 Excel 工作簿对象
