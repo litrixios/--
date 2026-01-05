@@ -289,3 +289,14 @@ WHERE NOT EXISTS (  -- 防重插
 )
 ORDER BY StatDate DESC, FactoryId, EnergyType
 OPTION (MAXRECURSION 10);
+
+
+
+-- 插入测试数据到电价政策表
+INSERT INTO ElectricityPricePolicy (TimeStart, PriceType) VALUES
+('00:00', 'Valley'), -- 深夜低谷
+('08:00', 'Peak'),   -- 早高峰
+('12:00', 'Flat'),   -- 中午平段
+('14:00', 'Peak'),   -- 下午高峰
+('18:00', 'Sharp'),  -- 傍晚尖峰
+('22:00', 'Flat');   -- 晚间平段
