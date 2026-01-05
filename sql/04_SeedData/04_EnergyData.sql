@@ -62,43 +62,71 @@ VALUES
 ('EM-C05-003', N'蒸汽', N'枢纽工厂锅炉出口', 'DN50', 'RS485', N'正常', 12, N'上海自仪', 20),
 ('EM-C05-004', N'天然气', N'枢纽工厂调压站', 'DN80', 'Lora', N'正常', 12, N'金卡智能', 20);
 
+
+SET NOCOUNT ON;
+SET DATEFORMAT ymd;
+
+DECLARE @StartDT DATETIME2(0) = '2025-01-01 00:00:00';
+DECLARE @EndDT   DATETIME2(0) = '2025-11-28 23:00:00';  -- 含当天最后一小时
+
+;WITH Hours AS (
+    SELECT @StartDT AS CollectTime
+    UNION ALL
+    SELECT DATEADD(HOUR, 1, CollectTime)
+    FROM Hours
+    WHERE CollectTime < @EndDT
+),
+Meters AS (
+    -- 只生成你要求的 4 个表：电1、水2、蒸汽3、天然气4
+    SELECT *
+    FROM (VALUES
+        (1, N'kWh', N'电',     CAST(1200.0 AS FLOAT), CAST(180.0 AS FLOAT), 1), -- MeterId, Unit, Type, Base, Amp, FactoryId
+        (2, N'm3',  N'水',     CAST(  24.0 AS FLOAT), CAST(  6.0 AS FLOAT), 1),
+        (3, N't',   N'蒸汽',   CAST(   4.8 AS FLOAT), CAST(  1.6 AS FLOAT), 1),
+        (4, N'm3',  N'天然气', CAST(  78.0 AS FLOAT), CAST( 18.0 AS FLOAT), 1)
+    ) v(MeterId, Unit, EnergyType, BaseValue, AmpValue, FactoryId)
+),
+Src AS (
+    SELECT
+        m.MeterId,
+        h.CollectTime,
+        m.FactoryId,
+        m.Unit,
+
+        -- 生成一个“看起来像真实波动”的小时值（按日周期 + 周期叠加 + 缓慢趋势）
+        CAST(
+            m.BaseValue
+            * (1.0 + (DATEDIFF(DAY, @StartDT, h.CollectTime) * 0.0008))  -- 缓慢上升趋势（可调）
+            + m.AmpValue * (
+                CASE
+                    WHEN DATEPART(HOUR, h.CollectTime) BETWEEN 8 AND 20 THEN 1.0  -- 白天偏高
+                    ELSE 0.6                                                     -- 夜间偏低
+                END
+              )
+            + ((m.MeterId * 7 + DATEPART(HOUR, h.CollectTime) * 13 + DATEPART(DAYOFYEAR, h.CollectTime) * 3) % 17 - 8) * 0.25
+            AS DECIMAL(18,3)
+        ) AS Value,
+
+        N'优' AS DataQuality,
+        CAST(0 AS BIT) AS NeedVerify
+    FROM Meters m
+    CROSS JOIN Hours h
+)
+INSERT INTO EnergyMeasurement (MeterId, CollectTime, Value, Unit, DataQuality, FactoryId, NeedVerify)
+SELECT
+    s.MeterId, s.CollectTime, s.Value, s.Unit, s.DataQuality, s.FactoryId, s.NeedVerify
+FROM Src s
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM EnergyMeasurement e
+    WHERE e.MeterId = s.MeterId
+      AND e.CollectTime = s.CollectTime
+)
+OPTION (MAXRECURSION 0);  -- 允许递归生成所有小时
+GO
+
 INSERT INTO EnergyMeasurement (MeterId, CollectTime, Value, Unit, DataQuality, FactoryId, NeedVerify)
 VALUES
--- 电表1（MeterId=1）近10小时数据
-(1, '2025-11-28 08:00:00', 1250.500, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 09:00:00', 1280.300, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 10:00:00', 1320.800, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 11:00:00', 1350.200, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 12:00:00', 1300.600, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 13:00:00', 1280.400, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 14:00:00', 1260.700, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 15:00:00', 1240.900, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 16:00:00', 1220.300, 'kWh', N'优', 1, 0),
-(1, '2025-11-28 17:00:00', 1200.100, 'kWh', N'优', 1, 0),
--- 水表2（MeterId=2）近10小时数据
-(2, '2025-11-28 08:00:00', 25.300, 'm3', N'优', 1, 0),
-(2, '2025-11-28 09:00:00', 26.100, 'm3', N'优', 1, 0),
-(2, '2025-11-28 10:00:00', 27.500, 'm3', N'优', 1, 0),
-(2, '2025-11-28 11:00:00', 28.200, 'm3', N'优', 1, 0),
-(2, '2025-11-28 12:00:00', 26.800, 'm3', N'优', 1, 0),
-(2, '2025-11-28 13:00:00', 25.900, 'm3', N'优', 1, 0),
-(2, '2025-11-28 14:00:00', 25.400, 'm3', N'优', 1, 0),
-(2, '2025-11-28 15:00:00', 24.800, 'm3', N'优', 1, 0),
-(2, '2025-11-28 16:00:00', 24.200, 'm3', N'优', 1, 0),
-(2, '2025-11-28 17:00:00', 23.700, 'm3', N'优', 1, 0),
--- 蒸汽表3（MeterId=3）近10小时数据
-(3, '2025-11-28 08:00:00', 5.200, 't', N'优', 1, 0),
-(3, '2025-11-28 09:00:00', 5.500, 't', N'优', 1, 0),
-(3, '2025-11-28 10:00:00', 5.800, 't', N'优', 1, 0),
-(3, '2025-11-28 11:00:00', 6.100, 't', N'优', 1, 0),
-(3, '2025-11-28 12:00:00', 5.700, 't', N'优', 1, 0),
-(3, '2025-11-28 13:00:00', 5.400, 't', N'优', 1, 0),
-(3, '2025-11-28 14:00:00', 5.100, 't', N'优', 1, 0),
-(3, '2025-11-28 15:00:00', 4.900, 't', N'优', 1, 0),
-(3, '2025-11-28 16:00:00', 4.600, 't', N'优', 1, 0),
-(3, '2025-11-28 17:00:00', 4.300, 't', N'优', 1, 0),
--- 设备4（天然气）
-(4, '2025-11-28 17:00:00', 85.300, 'm3', N'优', 1, 0),
 -- 设备5-6（电、水）
 (5, '2025-11-28 17:00:00', 950.200, 'kWh', N'优', 2, 0),
 (6, '2025-11-28 17:00:00', 18.500, 'm3', N'优', 2, 0),
@@ -187,20 +215,17 @@ INSERT INTO EnergyMeasurement (MeterId, CollectTime, Value, Unit, DataQuality, F
 (1, '2025-11-30 10:00:00', 9999.9, 'kWh', '差', 1, 1); -- 异常数据！待核实！
 
 GO
-
 SET NOCOUNT ON;
 SET DATEFORMAT ymd;
 
 -- =============================================
--- 自动生成最近 6 天（今天 + 前 5 天）的峰谷能耗统计数据
+-- 自动生成最近 1 年（今天 + 前 1 年）的峰谷能耗统计数据
 -- 插入表：PeakValleyEnergy
 -- =============================================
 
-DECLARE @Today DATE = CAST(GETDATE() AS DATE);           -- 今天
-DECLARE @StartDate DATE = DATEADD(DAY, -5, @Today);      -- 前第5天（包含）
-DECLARE @EndDate   DATE = @Today;                        -- 今天（包含）
-
--- 如果你只想前5天不含今天，可改为：DECLARE @EndDate DATE = DATEADD(DAY, -1, @Today);
+DECLARE @Today DATE = CAST(GETDATE() AS DATE);             -- 今天
+DECLARE @StartDate DATE = DATEADD(YEAR, -1, @Today);       -- 前 1 年（包含）
+DECLARE @EndDate   DATE = @Today;                          -- 今天（包含）
 
 ;WITH Dates AS (
     -- 递归生成连续日期
@@ -238,13 +263,13 @@ Factories AS (
 ),
 -- 将四个能源类型展开
 EnergyExpand AS (
-    SELECT FactoryId, N'电'     AS EnergyType, ElecBase   AS BaseValue, 0.8500 AS UnitPrice FROM Factories WHERE ElecBase   > 0
+    SELECT FactoryId, N'电'     AS EnergyType, ElecBase   AS BaseValue, 0.8500    AS UnitPrice FROM Factories WHERE ElecBase  > 0
     UNION ALL
-    SELECT FactoryId, N'水'     AS EnergyType, WaterBase  AS BaseValue, 3.2000 AS UnitPrice FROM Factories WHERE WaterBase  > 0
+    SELECT FactoryId, N'水'     AS EnergyType, WaterBase  AS BaseValue, 3.2000    AS UnitPrice FROM Factories WHERE WaterBase > 0
     UNION ALL
-    SELECT FactoryId, N'蒸汽'   AS EnergyType, SteamBase  AS BaseValue, 210.0000 AS UnitPrice FROM Factories WHERE SteamBase  > 0
+    SELECT FactoryId, N'蒸汽'   AS EnergyType, SteamBase  AS BaseValue, 210.0000  AS UnitPrice FROM Factories WHERE SteamBase > 0
     UNION ALL
-    SELECT FactoryId, N'天然气' AS EnergyType, GasBase    AS BaseValue, 2.6000 AS UnitPrice FROM Factories WHERE GasBase    > 0
+    SELECT FactoryId, N'天然气' AS EnergyType, GasBase    AS BaseValue, 2.6000    AS UnitPrice FROM Factories WHERE GasBase   > 0
 ),
 -- 主计算逻辑
 Src AS (
@@ -256,7 +281,7 @@ Src AS (
         -- 当天总量 = 基准量 × (1 + 随天增长2%) × (厂区固定扰动 ±3%)
         e.BaseValue
             * (1.0 + DATEDIFF(DAY, @StartDate, d.StatDate) * 0.02)
-            * (1.0 + ((e.FactoryId % 7) - 3) * 0.01)               AS TotalValue
+            * (1.0 + ((e.FactoryId % 7) - 3) * 0.01) AS TotalValue
     FROM EnergyExpand e
     CROSS JOIN Dates d
 )
@@ -288,4 +313,15 @@ WHERE NOT EXISTS (  -- 防重插
       AND p.StatDate   = s.StatDate
 )
 ORDER BY StatDate DESC, FactoryId, EnergyType
-OPTION (MAXRECURSION 10);
+OPTION (MAXRECURSION 400);
+
+
+
+-- 插入测试数据到电价政策表
+INSERT INTO ElectricityPricePolicy (TimeStart, PriceType) VALUES
+('00:00', 'Valley'), -- 深夜低谷
+('08:00', 'Peak'),   -- 早高峰
+('12:00', 'Flat'),   -- 中午平段
+('14:00', 'Peak'),   -- 下午高峰
+('18:00', 'Sharp'),  -- 傍晚尖峰
+('22:00', 'Flat');   -- 晚间平段
