@@ -24,10 +24,16 @@ def get_user_list(role_filter: str = None):
     conn = get_conn()
     cursor = conn.cursor(as_dict=True)
     try:
+        # 1. 基础 SQL
         sql = "SELECT UserId, UserName, RealName, Phone, RoleCode, IsLocked, FailedLoginCount, LastFailedTime FROM UserAccount"
-        if role_filter:
-            sql += f" WHERE RoleCode = N'{role_filter}'"
-        cursor.execute(sql)
+
+        # 2. 只有当 role_filter 有效且不为空时才增加过滤
+        if role_filter and role_filter.strip():
+            sql += " WHERE RoleCode = %s"  # 使用 %s 占位符，防止 SQL 注入
+            cursor.execute(sql, (role_filter,))
+        else:
+            cursor.execute(sql)
+
         return cursor.fetchall()
     finally:
         conn.close()
@@ -114,12 +120,23 @@ def update_alarm_rule(request: AlarmRuleUpdateRequest):
 # ==========================================
 # 7. 配置：获取电价时段列表
 # ==========================================
+# backend/routers/admin.py
+
 @router.get("/price-policy/list")
 def get_price_policies():
     conn = get_conn()
     cursor = conn.cursor(as_dict=True)
     try:
-        cursor.execute("SELECT * FROM ElectricityPricePolicy ORDER BY TimeStart")
+        # 使用 AS 确保返回的 Key 首字母大写，与前端 el-table-column 匹配
+        sql = """
+              SELECT
+                  PolicyId,
+                  TimeStart,
+                  PriceType
+              FROM ElectricityPricePolicy
+              ORDER BY TimeStart \
+              """
+        cursor.execute(sql)
         return cursor.fetchall()
     finally:
         conn.close()

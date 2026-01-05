@@ -19,17 +19,27 @@
 
 <script setup>
 import { reactive, onMounted } from 'vue'
-import axios from 'axios'
+import axios from '../../utils/request'
 import { ElMessage } from 'element-plus'
 
 const dbStats = reactive({ active_connections: 0, total_size: '0 MB' })
 const fetchStats = async () => {
-  const res = await axios.get('/api/admin/monitor/stats')
-  Object.assign(dbStats, res.data)
+  try {
+    // ✅ 修改：res 已经是后端数据，不需要 .data
+    const res = await axios.get('/api/admin/monitor/stats')
+    Object.assign(dbStats, res)
+  } catch (error) {
+    console.error('获取统计失败', error)
+  }
 }
 const doBackup = async () => {
-  const res = await axios.post('/api/admin/maintenance/backup', {})
-  ElMessage.success(`备份成功至：${res.data.path}`)
+  try {
+    // ✅ 修改：res 已经是后端数据
+    const res = await axios.post('/api/admin/maintenance/backup', {})
+    ElMessage.success(`备份成功至：${res.path}`)
+  } catch (error) {
+    ElMessage.error('备份失败，请检查权限')
+  }
 }
 onMounted(fetchStats)
 </script>

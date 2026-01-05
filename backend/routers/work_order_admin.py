@@ -4,7 +4,7 @@ from backend.models import WorkOrderCreateRequest, AlarmDismissRequest, WorkOrde
 from backend.deps import require_role
 
 router = APIRouter(
-    prefix="/api/work-order",
+    prefix="/api/wo-admin",
     tags=["工单管理"],
     dependencies=[Depends(require_role(["WorkOrderAdmin", "Admin"]))]
 )

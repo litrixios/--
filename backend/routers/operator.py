@@ -8,7 +8,7 @@ from datetime import datetime
 router = APIRouter(
     prefix="/api/operator",
     tags=["运维人员"],
-    dependencies=[Depends(require_role(["Maintainer", "Admin"]))]
+    #dependencies=[Depends(require_role(["Maintainer", "Admin"]))]
 )
 
 
