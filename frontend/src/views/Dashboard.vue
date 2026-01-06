@@ -2,7 +2,7 @@
   <div class="dashboard-container">
 
     <div class="header-section">
-      <h1>⚡ 智慧能源管理系统 <small style="font-size: 14px; color: #999; font-weight: normal;">(v1.0 究极肝帝版)</small></h1>
+      <h1>⚡ 智慧能源管理系统 <small style="font-size: 14px; color: #999; font-weight: normal;"></small></h1>
     </div>
 
     <el-row :gutter="20">
@@ -11,23 +11,23 @@
         <el-card class="meme-card" shadow="hover">
           <div class="meme-content">
             <div class="typing-effect">
-              💪 小牛马，今天也要认真上班哦！
+              智慧能源系统
             </div>
 
             <div class="image-wrapper">
-              <img src="../assets/cow.jpg" alt="working hard" class="cow-img" />
-              <div class="image-caption">👆 图：现在的你 (监控画面实时回传)</div>
+              <img src="../assets/img.png" alt="working hard" class="cow-img" />
+              <div class="image-caption">👆 能源管理</div>
             </div>
 
             <div class="fake-stats">
-              <div class="stat-item">
-                <span>距离退休进度：</span>
-                <el-progress :percentage="0.01" status="exception" :format="() => '0.01% (遥遥无期)'" />
-              </div>
-              <div class="stat-item">
-                <span>今日精神状态：</span>
-                <el-progress :percentage="5" color="#f56c6c" :format="() => '5% (快崩溃了)'" />
-              </div>
+              <!--              <div class="stat-item">-->
+              <!--                <span>距离退休进度：</span>-->
+              <!--                <el-progress :percentage="0.01" status="exception" :format="() => '0.01% (遥遥无期)'" />-->
+              <!--              </div>-->
+              <!--              <div class="stat-item">-->
+              <!--                <span>今日精神状态：</span>-->
+              <!--                <el-progress :percentage="5" color="#f56c6c" :format="() => '5% (快崩溃了)'" />-->
+              <!--              </div>-->
             </div>
           </div>
         </el-card>
@@ -83,12 +83,12 @@
               <h4>📊 数据预言指令</h4>
               <p>光伏电量对不上，能耗曲线在梦游，<br>全厂的节能KPI都压在你肩上了！</p>
               <el-button type="success" @click="$router.push('/analysis/report')">
-                开始深度分析 (去头秃)
+                开始深度分析
               </el-button>
             </div>
 
             <div v-if="!['运维工单管理员', 'WorkOrderAdmin', '运维人员', 'Maintainer'].includes(role) && !role.includes('运维')" class="tip-box">
-              <p>你好像没有分配具体的搬砖任务，<br>建议摸鱼。</p>
+
             </div>
 
           </div>
