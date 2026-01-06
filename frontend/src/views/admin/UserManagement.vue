@@ -5,7 +5,7 @@
         <el-button type="primary" @click="openAddUser">新增用户</el-button>
         <el-select v-model="roleFilter" placeholder="角色筛选" clearable @change="fetchUsers" style="width: 200px; margin-left: 10px;">
           <el-option label="系统管理员" value="Admin" />
-          <el-option label="运维人员" value="Operator" />
+          <el-option label="运维人员" value="Maintainer" />
           <el-option label="工单管理员" value="WorkOrderAdmin" />
         </el-select>
       </div>
@@ -57,7 +57,7 @@
         <el-form-item label="角色">
           <el-select v-model="userForm.role_code" style="width: 100%">
             <el-option label="系统管理员" value="Admin" />
-            <el-option label="运维人员" value="Operator" />
+            <el-option label="运维人员" value="Maintainer" />
             <el-option label="工单管理员" value="WorkOrderAdmin" />
           </el-select>
         </el-form-item>
@@ -104,7 +104,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
-import axios from 'axios'
+import axios from '../../utils/request'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 // --- 用户管理逻辑 ---
@@ -124,9 +124,20 @@ const userForm = reactive({
 
 const fetchUsers = async () => {
   try {
-    const res = await axios.get('/api/admin/user/list', { params: { role_filter: roleFilter.value } })
-    userList.value = res.data
-  } catch (error) { console.error('获取失败:', error) }
+    // res 已经是拦截器脱壳后的数据（即后端返回的列表）
+    const res = await axios.get('/api/admin/user/list', {
+      params: { role_filter: roleFilter.value }
+    })
+
+    // 如果你的 request.js 已经返回了 response.data，这里直接赋值 res
+    userList.value = res
+
+    // 调试用：如果控制台打印的是数组，说明赋值成功
+    console.log('用户列表：', res)
+  } catch (error) {
+    console.error('获取失败:', error)
+    ElMessage.error('权限不足或登录过期')
+  }
 }
 
 const openAddUser = () => {
@@ -188,22 +199,32 @@ const handleAssignPermission = async (row) => {
   currentEditUserId.value = row.UserId
   try {
     // 1. 获取所有可选资源
+    // ✅ 修复：resObj 已经是后端返回的对象 {factories: [], ...}
     const resObj = await axios.get('/api/admin/permission/objects')
-    allObjects.value = resObj.data
+    allObjects.value = resObj
 
-    // 2. 清空并加载该用户已有权限
+    // 2. 重置选中状态
     selectedKeys.Factory = []
     selectedKeys.Substation = []
     selectedKeys.PvGridPoint = []
 
+    // 3. 获取该用户已有权限
+    // ✅ 修复：resAuth 已经是后端返回的数组 [{}, {}]
     const resAuth = await axios.get(`/api/admin/user/permissions/${row.UserId}`)
-    resAuth.data.forEach(item => {
-      if (selectedKeys[item.ObjectType]) {
-        selectedKeys[item.ObjectType].push(item.ObjectId)
-      }
-    })
+
+    // 4. 只有当返回的是数组时才遍历
+    if (Array.isArray(resAuth)) {
+      resAuth.forEach(item => {
+        // 注意：item.ObjectType 必须与 selectedKeys 的 key 大小写完全一致
+        if (selectedKeys[item.ObjectType]) {
+          selectedKeys[item.ObjectType].push(item.ObjectId)
+        }
+      })
+    }
+
     scopeDialogVisible.value = true
   } catch (error) {
+    console.error('加载权限数据失败:', error)
     ElMessage.error('加载权限数据失败')
   }
 }

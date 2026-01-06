@@ -32,23 +32,41 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
-import axios from 'axios'
+import axios from '../../utils/request'
 import { ElMessage } from 'element-plus'
 
 const pricePolicies = ref([])
 const alarmForm = reactive({ device_type: 'Transformer', metric_name: 'Temperature', new_threshold: 80 })
 
 const fetchPricePolicies = async () => {
-  const res = await axios.get('/api/admin/price-policy/list')
-  pricePolicies.value = res.data
+  try {
+    const res = await axios.get('/api/admin/price-policy/list')
+    // 直接赋值 res，不要写 .data
+    pricePolicies.value = res
+    console.log("检查数据结构:", res) // 看看控制台打印的是不是数组
+  } catch (error) {
+    console.error('获取失败', error)
+  }
 }
 const submitAlarmUpdate = async () => {
-  await axios.post('/api/admin/alarm-rule/update', alarmForm)
-  ElMessage.success('阈值已更新')
+  try {
+    await axios.post('/api/admin/alarm-rule/update', alarmForm)
+    ElMessage.success('阈值已更新')
+  } catch (error) {
+    ElMessage.error('保存失败')
+  }
 }
 const updatePrice = async (row) => {
-  await axios.post('/api/admin/price-policy/update', { policy_id: row.PolicyId, new_price_type: row.PriceType })
-  ElMessage.success('电价已更新')
+  try {
+    // ✅ 注意：确认后端的 policy_id 和 new_price_type 命名是否与此一致
+    await axios.post('/api/admin/price-policy/update', {
+      policy_id: row.PolicyId,
+      new_price_type: row.PriceType
+    })
+    ElMessage.success('电价策略已更新')
+  } catch (error) {
+    ElMessage.error('更新失败')
+  }
 }
 onMounted(fetchPricePolicies)
 </script>

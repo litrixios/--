@@ -7,9 +7,9 @@ from datetime import datetime, timedelta  # 新增导入
 import decimal
 
 router = APIRouter(
-    prefix="/api/energy",
+    prefix="/api/energy_manager",
     tags=["能源管理"],
-    dependencies=[Depends(require_role(["EnergyManager", "Admin"]))]
+    #dependencies=[Depends(require_role(["EnergyManager", "Admin"]))]
 )
 
 @router.get("/report")

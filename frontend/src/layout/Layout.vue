@@ -10,9 +10,6 @@
           能源管理中心
         </el-menu-item>
 
-        <el-menu-item v-if="role === 'Manager' || role === 'manager'" index="/manager/overview">
-          管理层驾驶舱
-        </el-menu-item>
 
         <template v-if="role === 'Admin'">
           <el-menu-item index="/system/users">用户账号维护</el-menu-item>

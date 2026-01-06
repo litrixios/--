@@ -18,7 +18,7 @@ def login(req: LoginRequest):
     try:
         # 1. 查用户状态
         sql = """
-            SELECT UserId, RealName, PasswordHash, RoleCode, 
+            SELECT UserId, UserName,RealName, PasswordHash, RoleCode, 
                    IsLocked, FailedLoginCount 
             FROM UserAccount 
             WHERE UserName = %s
@@ -66,7 +66,7 @@ def login(req: LoginRequest):
         # 【安全功能2：生成带30分钟过期的 JWT Token】
         expire = datetime.utcnow() + timedelta(minutes=30)
         token_data = {
-            "sub": user['UserName'],
+            "sub": user['UserName'] or user.get('username') or req.username,
             "user_id": user['UserId'],
             "role_code": user['RoleCode'],
             "exp": expire
